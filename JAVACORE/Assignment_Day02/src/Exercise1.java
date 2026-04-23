@@ -1,5 +1,3 @@
-import java.lang.classfile.instruction.SwitchCase;
-
 public class Exercise1 {
     public static void question1(Account account) {
         if (account.getDepartment() == null) {

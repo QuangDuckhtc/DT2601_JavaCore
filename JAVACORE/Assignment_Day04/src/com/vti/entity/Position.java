@@ -1,3 +1,5 @@
+package com.vti.entity;
+
 public class Position {
     private int positionID;
     private PositionName positionName;

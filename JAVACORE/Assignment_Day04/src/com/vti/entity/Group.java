@@ -1,59 +1,92 @@
+package com.vti.entity;
+
+import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.Date;
 
 public class Group {
-    private int groupID;
+    private int groupId;
     private String groupName;
-    private Date createDate;
+    private Account creator;
+    private LocalDate createDate;
     private Account[] accounts;
 
+    //    a.tạo constructor ko tham số
+    public Group() {
 
-    public Group(int groupID, String groupName, Date createDate, Account[] accounts) {
-        this.groupID = groupID;
+
+    }
+
+    @Override
+    public String toString() {
+        return "Group{" +
+                "groupId=" + groupId +
+                ", groupName='" + groupName + '\'' +
+                ", creator=" + creator +
+                ", createDate=" + createDate +
+                ", accounts=" + Arrays.toString(accounts) +
+                '}';
+    }
+
+    //    b.có tham số
+    public Group(String groupName, Account creator, Account[] accounts, LocalDate createDate) {
         this.groupName = groupName;
-        this.createDate = createDate;
+        this.creator = creator;
         this.accounts = accounts;
+        this.createDate = createDate;
     }
 
-    public int getGroupID() {
-        return groupID;
+    //    c. có tham số
+    public Group(String groupName, Account creator, String[] usernames, LocalDate createDate) {
+        this.groupName = groupName;
+        this.creator = creator;
+        this.createDate = createDate;
+
+        this.accounts = new Account[usernames.length];
+        for (int i = 0; i < usernames.length; i++) {
+            Account acc = new Account();
+            acc.setUserName(usernames[i]);
+            this.accounts[i] = acc;
+        }
     }
 
-    public void setGroupID(int groupID) {
-        this.groupID = groupID;
+    public int getGroupId() {
+        return groupId;
     }
 
     public String getGroupName() {
         return groupName;
     }
 
-    public void setGroupName(String groupName) {
-        this.groupName = groupName;
+    public Account getCreator() {
+        return creator;
     }
 
-    public Date getCreateDate() {
+    public LocalDate getCreateDate() {
         return createDate;
-    }
-
-    public void setCreateDate(Date createDate) {
-        this.createDate = createDate;
     }
 
     public Account[] getAccounts() {
         return accounts;
     }
 
-    public void setAccounts(Account[] accounts) {
-        this.accounts = accounts;
+    public void setGroupId(int groupId) {
+        this.groupId = groupId;
     }
 
-    @Override
-    public String toString() {
-        return "Group{" +
-                "groupID=" + groupID +
-                ", groupName='" + groupName + '\'' +
-                ", createDate=" + createDate +
-                ", accounts=" + Arrays.toString(accounts) +
-                '}';
+    public void setGroupName(String groupName) {
+        this.groupName = groupName;
+    }
+
+    public void setCreator(Account creator) {
+        this.creator = creator;
+    }
+
+    public void setCreateDate(LocalDate createDate) {
+        this.createDate = createDate;
+    }
+
+    public void setAccounts(Account[] accounts) {
+        this.accounts = accounts;
     }
 }

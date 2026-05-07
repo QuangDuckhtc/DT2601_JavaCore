@@ -1,5 +1,5 @@
 package com.vti.backend;
 
-public class Excersise2 {
+public class Exercise2 {
 //    oki
 }

@@ -5,7 +5,7 @@ import com.vti.entity.Group;
 
 import java.time.LocalDate;
 
-public class Excersise1 {
+public class Exercice1 {
     // question1 : làm ở package entity
 //    question2: làm ở package entity
     public  void question3() {

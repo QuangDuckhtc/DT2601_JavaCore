@@ -7,7 +7,7 @@ import com.vti.entity.Student;
 
 import java.util.Scanner;
 
-public class Excercise4 {
+public class Exercise4 {
     public float score;
     public float scorePlus;
     public double radius;

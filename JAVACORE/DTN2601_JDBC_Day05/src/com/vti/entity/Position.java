@@ -4,6 +4,9 @@ public class Position {
     private int positionID;
     private PositionName positionName;
 
+    public Position(){
+
+    }
 
     public Position(int positionID, PositionName positionName) {
         this.positionID = positionID;

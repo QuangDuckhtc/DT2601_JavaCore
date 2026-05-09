@@ -1,78 +1,64 @@
 package com.vti.backend;
 
+import com.vti.entity.Account;
+import com.vti.entity.Department;
+import com.vti.entity.Position;
+import com.vti.entity.PositionName;
 import com.vti.utils.DButils;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
 public class QLAccount {
-    public void getAccounts() {
+    public List<Account> getAllAccounts() {
+
+        List<Account> list = new ArrayList<>();
 
         try {
-            Connection connection = DButils.getConnection();
-            String sql = "SELECT a.account_id, " +
-                    "a.email, " +
-                    "a.full_name, " +
-                    "d.department_name, " +
-                    "p.position_name, " +
-                    "a.create_date " +
-                    "FROM account a " +
-                    "LEFT JOIN department d " +
-                    "ON a.department_id = d.department_id " +
-                    "LEFT JOIN position p " +
-                    "ON a.position_id = p.position_id";
 
-            PreparedStatement ps =
-                    connection.prepareStatement(sql);
+            Connection conn = DButils.getConnection();
 
-            ResultSet rs =
-                    ps.executeQuery();
+            String sql =
+                    "SELECT a.*, d.department_name, p.position_name " +
+                            "FROM account a " +
+                            "LEFT JOIN department d ON a.department_id = d.department_id " +
+                            "LEFT JOIN position p ON a.position_id = p.position_id";
 
-            System.out.println(
-                    "+----------------------------------------------------------------------------------------------------------------------+"
-            );
+            PreparedStatement ps = conn.prepareStatement(sql);
 
-            System.out.printf(
-                    "| %-5s | %-25s | %-20s | %-20s | %-15s | %-15s |%n",
-                    "ID",
-                    "EMAIL",
-                    "FULL NAME",
-                    "DEPARTMENT",
-                    "POSITION",
-                    "CREATE DATE"
-            );
-            System.out.println(
-                    "+----------------------------------------------------------------------------------------------------------------------+"
-            );
+            ResultSet rs = ps.executeQuery();
 
             while (rs.next()) {
-                System.out.printf(
-                        "| %-5d | %-25s | %-20s | %-20s | %-15s | %-15s |%n",
 
-                        rs.getInt("account_id"),
+                Account a = new Account();
 
-                        rs.getString("email"),
+                a.setAccountID(rs.getInt("account_id"));
+                a.setEmail(rs.getString("email"));
+                a.setFullName(rs.getString("full_name"));
 
-                        rs.getString("full_name"),
+                Department d = new Department();
+                d.setDepartmentName(rs.getString("department_name").toUpperCase());
+                a.setDepartment(d);
 
-                        rs.getString("department_name"),
+                Position p = new Position();
+                p.setPositionName(PositionName.valueOf(rs.getString("position_name").toUpperCase()));
+                a.setPositionName(p.getPositionName());
 
-                        rs.getString("position_name"),
+                a.setCreateDate(rs.getDate("create_date").toLocalDate());
 
-                        rs.getTimestamp("create_date")
-
-                );
+                list.add(a);
             }
-            System.out.println(
-                    "+----------------------------------------------------------------------------------------------------------------------+"
-            );
-            connection.close();
+
+            conn.close();
 
         } catch (Exception e) {
-
             e.printStackTrace();
         }
+
+        return list;
     }
 }

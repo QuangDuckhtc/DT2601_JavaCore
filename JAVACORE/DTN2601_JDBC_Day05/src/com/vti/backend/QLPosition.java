@@ -1,63 +1,39 @@
 package com.vti.backend;
 
+import com.vti.entity.Position;
+import com.vti.entity.PositionName;
 import com.vti.utils.DButils;
 
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.util.ArrayList;
+import java.util.List;
 
 public class QLPosition {
-    public void getPositions() {
+
+    public List<Position> getAllPositions() {
+
+        List<Position> list = new ArrayList<>();
 
         try {
-
-
-            Connection connection = DButils.getConnection();
-
-            String sql =
-                    "SELECT * FROM position";
-
-            PreparedStatement ps =
-                    connection.prepareStatement(sql);
-
-            ResultSet rs =
-                    ps.executeQuery();
-
-            System.out.println(
-                    "+--------------------------------------+"
-            );
-
-            System.out.printf(
-                    "| %-10s | %-20s |%n",
-                    "ID",
-                    "POSITION NAME"
-            );
-
-            System.out.println(
-                    "+--------------------------------------+"
-            );
-
+            Connection conn = DButils.getConnection();
+            String sql = "SELECT * FROM position";
+            PreparedStatement ps = conn.prepareStatement(sql);
+            ResultSet rs = ps.executeQuery();
             while (rs.next()) {
 
-                System.out.printf(
-                        "| %-10d | %-20s |%n",
-
-                        rs.getInt("position_id"),
-
-                        rs.getString("position_name")
-                );
+                Position p = new Position();
+                p.setPositionID(rs.getInt("position_id"));
+                p.setPositionName(PositionName.valueOf(rs.getString("position_name").toUpperCase()));
+                list.add(p);
             }
-
-            System.out.println(
-                    "+--------------------------------------+"
-            );
-
-            connection.close();
+            conn.close();
 
         } catch (Exception e) {
-
             e.printStackTrace();
         }
+        return list;
     }
 }

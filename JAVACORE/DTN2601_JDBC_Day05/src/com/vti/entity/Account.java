@@ -10,6 +10,9 @@ public class Account {
     private PositionName positionName;
     private LocalDate createDate;
 
+    public Account(){
+
+    }
     public Account(int accountID, String email, String fullName, Department department, PositionName positionName, LocalDate createDate) {
         this.accountID = accountID;
         this.email = email;

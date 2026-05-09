@@ -1,29 +1,42 @@
 package com.vti.backend;
 
+import com.vti.entity.Department;
 import com.vti.utils.DButils;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
 public class QLDepartment {
-    public void getDepartment (){
-        try {
-            Connection connection = DButils.getConnection();
-            String sql = "SELECT * FROM department";
-            PreparedStatement ps = connection.prepareStatement(sql);
-            ResultSet rs = ps.executeQuery();
-            System.out.println("+==========+====================+");
+    public List<Department> getAllDepartments() {
 
-            System.out.printf("%-10s |%-20s|%n", "ID", "NAME");
-            System.out.println("+==========+====================+");
-            while (rs.next()){
-                System.out.printf("%-10d |%-20s|%n", rs.getInt("Department_id"), rs.getString("department_name"));
+        List<Department> list = new ArrayList<>();
+
+        try {
+
+            Connection conn = DButils.getConnection();
+
+            String sql = "SELECT * FROM department";
+
+            PreparedStatement ps = conn.prepareStatement(sql);
+
+            ResultSet rs = ps.executeQuery();
+
+            while (rs.next()) {
+
+                Department d = new Department();
+                d.setDepartmentID(rs.getInt("department_id"));
+                d.setDepartmentName(rs.getString("department_name"));
+                list.add(d);
             }
-            connection.close();
-        } catch (SQLException e) {
+            conn.close();
+        } catch (Exception e) {
             e.printStackTrace();
         }
+
+        return list;
     }
 }

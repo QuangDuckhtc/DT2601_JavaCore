@@ -4,6 +4,9 @@ public class Department {
     private int departmentID;
     private String departmentName;
 
+    public Department(){
+
+    }
     public Department(int departmentID, String departmentName) {
         this.departmentID = departmentID;
         this.departmentName = departmentName;
@@ -18,7 +21,7 @@ public class Department {
     }
 
     public String getDepartmentName() {
-        return departmentName;
+        return this.departmentName;
     }
 
     public void setDepartmentName(String departmentName) {

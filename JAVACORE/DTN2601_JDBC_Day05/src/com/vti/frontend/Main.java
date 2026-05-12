@@ -11,66 +11,45 @@ import com.vti.utils.DButils;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.List;
+import java.util.Scanner;
 
 public class Main {
+    private  static  Scanner scanner = new Scanner(System.in);
     static void main(String[] args) {
-        try {
-            Connection connection = DButils.getConnection();
-            if(connection != null){
-                System.out.println("Kết nối databse thành công");
+
+        while (true) {
+
+            System.out.println("\n=========== SYSTEM MENU ===========");
+            System.out.println("1. Department Function");
+            System.out.println("2. Position Function");
+            System.out.println("3. Account Function");
+            System.out.println("0. Thoát chương trình");
+            System.out.print("Chọn: ");
+
+            int choice = scanner.nextInt();
+            scanner.nextLine();
+
+            switch (choice) {
+
+                case 1:
+                    DepartmentFunction.menu();
+                    break;
+
+                case 2:
+                    PositionFunction.menu();
+                    break;
+
+                case 3:
+                    AccountFunction.menu();
+                    break;
+
+                case 0:
+                    System.out.println("Đã thoát chương trình!");
+                    return;
+
+                default:
+                    System.out.println("Sai lựa chọn, vui lòng nhập lại!");
             }
-        } catch (SQLException e) {
-            System.out.println("Kết nối thất bại");
-            e.printStackTrace();
-        }
-
-        QLAccount qlAccount = new QLAccount();
-        QLDepartment qlDepartment = new QLDepartment();
-        QLPosition qlPosition = new QLPosition();
-
-
-        System.out.println("================================ ACCOUNT LIST ================================================");
-        List<Account> accounts = qlAccount.getAllAccounts();
-
-        System.out.printf("| %-5s | %-20s | %-20s | %-15s | %-15s | %-12s |%n",
-                "ID", "EMAIL", "FULL NAME", "DEPARTMENT", "POSITION", "DATE");
-
-        System.out.println("-----------------------------------------------------------------------------------------------");
-
-        for (Account a : accounts) {
-            System.out.printf("| %-5d | %-20s | %-20s | %-15s | %-15s | %-12s |%n",
-                    a.getAccountID(),
-                    a.getEmail(),
-                    a.getFullName(),
-                    a.getDepartment().getDepartmentName(),
-                    a.getPositionName(),
-                    a.getCreateDate()
-            );
-        }
-
-        System.out.println("\n================= DEPARTMENT LIST ==================");
-
-        List<Department> departments = qlDepartment.getAllDepartments();
-        System.out.printf("| %-5s | %-20s |%n", "ID", "NAME");
-        System.out.println("------------------------------");
-
-        for (Department d : departments) {
-
-            System.out.printf("| %-5d | %-20s |%n", d.getDepartmentID(), d.getDepartmentName()
-            );
-        }
-
-        System.out.println("\n=========== POSITION LIST ===========");
-
-        List<Position> positions = qlPosition.getAllPositions();
-
-        System.out.printf("| %-5s | %-20s |%n", "ID", "NAME");
-        System.out.println("------------------------------");
-
-        for (Position p : positions) {
-
-            System.out.printf("| %-5d | %-20s |%n", p.getPositionID(), p.getPositionName()
-            );
         }
     }
 

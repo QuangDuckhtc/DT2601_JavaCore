@@ -9,5 +9,5 @@ public interface IAccountService {
     List<Account> findByName(String name);
     boolean insertAccount(String email, String username, String fullName, int departmentId, int positionId);
     boolean updateAccount(int id, String fullName);
-    public  boolean deleteAccount(String name) ;
+    public  boolean deleteAccount(int id) ;
 }

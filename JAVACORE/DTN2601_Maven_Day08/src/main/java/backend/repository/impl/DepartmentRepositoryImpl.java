@@ -224,5 +224,103 @@ public class DepartmentRepositoryImpl implements IDepartmentRepository {
 
         return list;
     }
+
+    @Override
+    public boolean existsByName(String name) {
+        try {
+
+            Connection connection =
+                    DButils.getConnection();
+
+            String sql =
+                    "SELECT COUNT(1) " +
+                            "FROM department " +
+                            "WHERE department_name = ?";
+
+            PreparedStatement ps =
+                    connection.prepareStatement(sql);
+
+            ps.setString(1, name);
+
+            ResultSet rs = ps.executeQuery();
+
+            if (rs.next()) {
+
+                return rs.getInt(1) > 0;
+            }
+
+        } catch (Exception e) {
+
+            e.printStackTrace();
+        }
+
+        return false;
+    }
+
+    @Override
+    public boolean existsById(int id) {
+        try {
+
+            Connection connection =
+                    DButils.getConnection();
+
+            String sql =
+                    "SELECT COUNT(1) " +
+                            "FROM department " +
+                            "WHERE department_id = ?";
+
+            PreparedStatement ps =
+                    connection.prepareStatement(sql);
+
+            ps.setInt(1, id);
+
+            ResultSet rs = ps.executeQuery();
+
+            if (rs.next()) {
+
+                return rs.getInt(1) > 0;
+            }
+
+        } catch (Exception e) {
+
+            e.printStackTrace();
+        }
+
+        return false;
+    }
+
+    @Override
+    public boolean existsByNameForUpdate(String name, int id) {
+        try {
+
+            Connection connection =
+                    DButils.getConnection();
+
+            String sql =
+                    "SELECT COUNT(1) " +
+                            "FROM department " +
+                            "WHERE department_name = ? " +
+                            "AND department_id <> ?";
+
+            PreparedStatement ps =
+                    connection.prepareStatement(sql);
+
+            ps.setString(1, name);
+            ps.setInt(2, id);
+
+            ResultSet rs = ps.executeQuery();
+
+            if (rs.next()) {
+
+                return rs.getInt(1) > 0;
+            }
+
+        } catch (Exception e) {
+
+            e.printStackTrace();
+        }
+
+        return false;
+    }
 }
 

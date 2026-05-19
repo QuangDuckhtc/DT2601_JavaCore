@@ -2,6 +2,7 @@ package frontend;
 
 import backend.controller.PositionController;
 import entity.Position;
+import entity.PositionName;
 import utils.TablePrinter;
 
 import java.util.List;
@@ -116,7 +117,9 @@ public class PositionFunction {
         System.out.print("Nhập position name: ");
         String name = scanner.nextLine();
 
-        boolean result = positionController.insertPosition(name);
+        PositionName positionName = PositionName.valueOf(name.toUpperCase());
+
+        boolean result = positionController.insertPosition(positionName);
 
         System.out.println(result ? "Thêm thành công" : "Thêm thất bại");
     }
@@ -139,10 +142,10 @@ public class PositionFunction {
     //  DELETE
     public  void delete() {
 
-        System.out.print("Nhập name cần xóa: ");
-        String name = scanner.nextLine();
+        System.out.print("Nhập id cần xóa: ");
+        int id = scanner.nextInt();
 
-        boolean result = positionController.deletePosition(name);
+        boolean result = positionController.deletePosition(id);
 
         System.out.println(result ? "Xóa thành công" : "Xóa thất bại");
     }

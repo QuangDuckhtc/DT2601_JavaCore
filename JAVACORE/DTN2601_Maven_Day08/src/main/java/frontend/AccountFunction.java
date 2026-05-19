@@ -144,10 +144,10 @@ public class AccountFunction {
     // DELETE
     public  void delete() {
 
-        System.out.print("Nhập email cần xóa: ");
-        String email = scanner.nextLine();
+        System.out.print("Nhập id cần xóa: ");
+        int id = scanner.nextInt();
 
-        boolean result = accountController.deleteAccount(email);
+        boolean result = accountController.deleteAccount(id);
 
         System.out.println(result ? "Xóa thành công" : "Xóa thất bại");
     }

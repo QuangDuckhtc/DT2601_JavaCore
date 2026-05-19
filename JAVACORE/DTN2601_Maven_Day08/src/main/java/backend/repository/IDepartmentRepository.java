@@ -12,5 +12,8 @@ public interface IDepartmentRepository {
     boolean updateDepartment(int id, String updateName);
     List<Department> getDepartmentHasMostEmployee();
     List<Department> getDepartmentHasLeastEmployee();
-
+//check --> valication
+    boolean existsByName(String name);
+    boolean existsById(int id);
+    boolean existsByNameForUpdate(String name, int id);
 }

@@ -1,45 +1,46 @@
 package backend.controller;
 
-import backend.repository.IPositionRepository;
-import backend.repository.impl.PositionRepositoryImpl;
+import backend.service.IPositionService;
+import backend.service.impl.PositionServiceImpl;
 import entity.Position;
+import entity.PositionName;
 
 import java.util.List;
 
 public class PositionController {
-    IPositionRepository positionRepository = new PositionRepositoryImpl();
+     IPositionService iPositionService = new PositionServiceImpl();
 
     public List<Position> getAllPositions() {
-        return positionRepository.getAllPositions();
+        return iPositionService.getAllPositions();
     }
 
 
     public List<Position> findByName(String name) {
-        return positionRepository.findByName(name);
+        return iPositionService.findByName(name);
     }
 
 
-    public boolean insertPosition(String name) {
-        return positionRepository.insertPosition(name);
+    public boolean insertPosition(PositionName positionName) {
+        return iPositionService.insertPosition(positionName);
     }
 
 
     public boolean updatePosition(int id, String name) {
-        return positionRepository.updatePosition(id,name);
+        return iPositionService.updatePosition(id,name);
     }
 
 
-    public boolean deletePosition(String name) {
-        return positionRepository.deletePosition(name);
+    public boolean deletePosition(int id) {
+        return iPositionService.deletePosition(id);
     }
 
 
     public List<Position> getPositionHasMostEmployee() {
-        return positionRepository.getPositionHasMostEmployee();
+        return iPositionService.getPositionHasMostEmployee();
     }
 
 
     public List<Position> getPositionHasLeastEmployee() {
-        return positionRepository.getPositionHasLeastEmployee();
+        return iPositionService.getPositionHasLeastEmployee();
     }
 }

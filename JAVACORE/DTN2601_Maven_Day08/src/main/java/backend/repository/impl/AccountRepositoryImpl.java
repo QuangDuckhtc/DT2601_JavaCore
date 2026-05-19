@@ -125,16 +125,16 @@ public class AccountRepositoryImpl implements IAccountRepository {
     }
 
     @Override
-    public boolean updateAccount(int id, String fullName) {
+    public boolean updateAccount(int id, String userName) {
         try {
 
             Connection conn = DButils.getConnection();
 
-            String sql = "UPDATE account SET full_name = ? WHERE account_id = ?";
+            String sql = "UPDATE account SET username = ? WHERE account_id = ?";
 
             PreparedStatement ps = conn.prepareStatement(sql);
 
-            ps.setString(1, fullName);
+            ps.setString(1,userName);
             ps.setInt(2, id);
 
             return ps.executeUpdate() > 0;
@@ -147,22 +147,171 @@ public class AccountRepositoryImpl implements IAccountRepository {
     }
 
     @Override
-    public boolean deleteAccount(String name) {
+    public boolean deleteAccount(int id) {
         try {
 
             Connection conn = DButils.getConnection();
 
-            String sql = "DELETE FROM account WHERE full_name LIKE ?";
+            String sql = "DELETE FROM account WHERE account_id = ?";
 
             PreparedStatement ps = conn.prepareStatement(sql);
 
-            ps.setString(1, name);
+            ps.setInt(1, id);
 
             return ps.executeUpdate() > 0;
 
         } catch (Exception e) {
             e.printStackTrace();
         }
+
+        return false;
+    }
+
+    @Override
+    public boolean existsByUsername(String username) {
+        try {
+
+            Connection connection = DButils.getConnection();
+
+            String sql = "SELECT COUNT(1) " +
+                    "FROM account " +
+                    "WHERE username = ?";
+
+            PreparedStatement ps = connection.prepareStatement(sql);
+
+            ps.setString(1, username);
+
+            ResultSet rs = ps.executeQuery();
+
+            if (rs.next()) {
+
+                return rs.getInt(1) > 0;
+            }
+
+        } catch (Exception e) {
+
+            e.printStackTrace();
+        }
+
+        return false;
+    }
+
+    @Override
+    public boolean existsByEmail(String email) {
+        try {
+
+            Connection connection = DButils.getConnection();
+
+            String sql = "SELECT COUNT(1) " +
+                    "FROM account " +
+                    "WHERE email = ?";
+
+            PreparedStatement ps = connection.prepareStatement(sql);
+
+            ps.setString(1, email);
+
+            ResultSet rs = ps.executeQuery();
+
+            if (rs.next()) {
+                return rs.getInt(1) > 0;
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return false;
+    }
+
+    @Override
+    public boolean existsById(int id) {
+        try {
+
+            Connection connection = DButils.getConnection();
+
+            String sql = "SELECT COUNT(1) " +
+                            "FROM account " +
+                            "WHERE account_id = ?";
+
+            PreparedStatement ps =
+                    connection.prepareStatement(sql);
+
+            ps.setInt(1, id);
+
+            ResultSet rs = ps.executeQuery();
+
+            if (rs.next()) {
+
+                return rs.getInt(1) > 0;
+            }
+
+        } catch (Exception e) {
+
+            e.printStackTrace();
+        }
+
+        return false;
+
+    }
+
+    @Override
+    public boolean updateUsername(int id, String newUsername) {
+        try {
+
+            Connection connection = DButils.getConnection();
+
+            String sql =
+                    "UPDATE account " +
+                            "SET username = ? " +
+                            "WHERE account_id = ?";
+
+            PreparedStatement ps =
+                    connection.prepareStatement(sql);
+
+            ps.setString(1, newUsername);
+            ps.setInt(2, id);
+
+            int result = ps.executeUpdate();
+
+            return result > 0;
+
+        } catch (Exception e) {
+
+            e.printStackTrace();
+        }
+
+        return false;
+
+    }
+
+    @Override
+    public boolean existsByUsernameForUpdate(String username, int id) { try {
+
+        Connection connection = DButils.getConnection();
+
+        String sql =
+                "SELECT COUNT(1) " +
+                        "FROM account " +
+                        "WHERE username = ? " +
+                        "AND account_id <> ?";
+
+        PreparedStatement ps =
+                connection.prepareStatement(sql);
+
+        ps.setString(1, username);
+        ps.setInt(2, id);
+
+        ResultSet rs = ps.executeQuery();
+
+        if (rs.next()) {
+
+            return rs.getInt(1) > 0;
+        }
+
+    } catch (Exception e) {
+
+        e.printStackTrace();
+    }
 
         return false;
     }

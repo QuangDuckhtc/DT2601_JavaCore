@@ -110,16 +110,16 @@ public class PositionRepositoryImpl implements IPositionRepository {
     }
 
     @Override
-    public boolean deletePosition(String name) {
+    public boolean deletePosition(int id) {
         try {
 
             Connection conn = DButils.getConnection();
 
-            String sql = "DELETE FROM position WHERE position_name LIKE ?";
+            String sql = "DELETE FROM position WHERE position_id  = ?";
 
             PreparedStatement ps = conn.prepareStatement(sql);
 
-            ps.setString(1, name);
+            ps.setInt(1, id);
 
             return ps.executeUpdate() > 0;
 
@@ -217,5 +217,107 @@ public class PositionRepositoryImpl implements IPositionRepository {
             e.printStackTrace();
         }
         return list;
+    }
+
+    @Override
+    public boolean existsByName(String name) {
+        try {
+
+            // b1: kết nối DB
+            Connection connection =
+                    DButils.getConnection();
+
+            // b2: tạo câu SQL
+            String sql =
+                    "SELECT COUNT(1) " +
+                            "FROM position " +
+                            "WHERE position_name = ?";
+
+            // b3: tạo prepared statement
+            PreparedStatement ps =
+                    connection.prepareStatement(sql);
+
+            // b4: truyền dữ liệu
+            ps.setString(1, name);
+
+            // b5: execute query
+            ResultSet rs = ps.executeQuery();
+
+            // b6: xử lý kết quả
+            if (rs.next()) {
+
+                return rs.getInt(1) > 0;
+            }
+
+        } catch (Exception e) {
+
+            e.printStackTrace();
+        }
+
+        return false;
+    }
+
+    @Override
+    public boolean existsByNameForUpdate(String name, int id) {
+        try {
+
+            Connection connection =
+                    DButils.getConnection();
+
+            String sql =
+                    "SELECT COUNT(1) " +
+                            "FROM position " +
+                            "WHERE position_name = ? " +
+                            "AND position_id <> ?";
+
+            PreparedStatement ps =
+                    connection.prepareStatement(sql);
+
+            ps.setString(1, name);
+            ps.setInt(2, id);
+
+            ResultSet rs = ps.executeQuery();
+
+            if (rs.next()) {
+
+                return rs.getInt(1) > 0;
+            }
+
+        } catch (Exception e) {
+
+            e.printStackTrace();
+        }
+
+        return false;
+    }
+
+    @Override
+    public boolean existsById(int id) {
+        try {
+
+            Connection connection = DButils.getConnection();
+
+            String sql = "SELECT COUNT(1) " +
+                            "FROM position " +
+                            "WHERE position_id = ?";
+
+            PreparedStatement ps =
+                    connection.prepareStatement(sql);
+
+            ps.setInt(1, id);
+
+            ResultSet rs = ps.executeQuery();
+
+            if (rs.next()) {
+
+                return rs.getInt(1) > 0;
+            }
+
+        } catch (Exception e) {
+
+            e.printStackTrace();
+        }
+
+        return false;
     }
 }

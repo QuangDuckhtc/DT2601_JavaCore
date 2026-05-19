@@ -2,34 +2,36 @@ package backend.controller;
 
 import backend.repository.IAccountRepository;
 import backend.repository.impl.AccountRepositoryImpl;
+import backend.service.IAccountService;
+import backend.service.impl.AccountServiceImpl;
 import entity.Account;
 
 import java.util.List;
 
 public class AccountController {
-    IAccountRepository accountRepository = new AccountRepositoryImpl();
+    IAccountService iAccountService = new AccountServiceImpl();
 
     public List<Account> getAllAccounts() {
-        return accountRepository.getAllAccounts();
+        return iAccountService.getAllAccounts();
     }
 
 
     public List<Account> findByName(String name) {
-        return accountRepository.findByName(name);
+        return iAccountService.findByName(name);
     }
 
 
     public boolean insertAccount(String email, String username, String fullName, int departmentId, int positionId) {
-        return accountRepository.insertAccount(email,username,fullName,departmentId,positionId);
+        return iAccountService.insertAccount(email,username,fullName,departmentId,positionId);
     }
 
 
-    public boolean updateAccount(int id, String fullName) {
-        return accountRepository.updateAccount(id,fullName);
+    public boolean updateAccount(int id, String userName) {
+        return iAccountService.updateAccount(id, userName);
     }
 
 
-    public boolean deleteAccount(String name) {
-        return accountRepository.deleteAccount(name);
+    public boolean deleteAccount(int id) {
+        return iAccountService.deleteAccount(id);
     }
 }

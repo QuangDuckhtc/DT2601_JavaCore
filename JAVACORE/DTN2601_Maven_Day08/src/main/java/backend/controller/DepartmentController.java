@@ -2,43 +2,45 @@ package backend.controller;
 
 import backend.repository.IDepartmentRepository;
 import backend.repository.impl.DepartmentRepositoryImpl;
+import backend.service.IDepartmentService;
+import backend.service.impl.DepartmentServiceImpl;
 import entity.Department;
 
 import java.util.List;
 
 public class DepartmentController {
-    IDepartmentRepository departmentRepository = new DepartmentRepositoryImpl();
+    IDepartmentService iDepartmentService = new DepartmentServiceImpl();
 
     public List<Department> getAllDepartments() {
-        return departmentRepository.getAllDepartments();
+        return iDepartmentService.getAllDepartments();
     }
 
     public List<Department> findByDepartmentIDAndName(int searchId, String searchName) {
-        return departmentRepository.findByDepartmentIDAndName(searchId,searchName);
+        return iDepartmentService.findByDepartmentIDAndName(searchId,searchName);
     }
 
 
     public boolean insertDepartment(String newName) {
-        return departmentRepository.insertDepartment(newName);
+        return iDepartmentService.insertDepartment(newName);
     }
 
 
     public boolean deleteDepartment(int deleteId) {
-        return departmentRepository.deleteDepartment(deleteId);
+        return iDepartmentService.deleteDepartment(deleteId);
     }
 
 
     public boolean updateDepartment(int id, String updateName) {
-        return departmentRepository.updateDepartment(id, updateName);
+        return iDepartmentService.updateDepartment(id, updateName);
     }
 
 
     public List<Department> getDepartmentHasMostEmployee() {
-        return departmentRepository.getDepartmentHasMostEmployee();
+        return iDepartmentService.getDepartmentHasMostEmployee();
     }
 
 
     public List<Department> getDepartmentHasLeastEmployee() {
-        return departmentRepository.getDepartmentHasLeastEmployee();
+        return iDepartmentService.getDepartmentHasLeastEmployee();
     }
 }

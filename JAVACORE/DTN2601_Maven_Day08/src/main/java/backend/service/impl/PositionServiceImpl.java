@@ -26,9 +26,7 @@ public class PositionServiceImpl implements IPositionService {
         // null
         if (positionName == null) {
 
-            System.out.println(
-                    "Tên chức vụ không được null"
-            );
+            System.out.println("Tên chức vụ không được null");
 
             return false;
         }
@@ -36,17 +34,14 @@ public class PositionServiceImpl implements IPositionService {
         // duplicate
         if (positionRepository.existsByName(positionName.name().toLowerCase())) {
 
-            System.out.println(
-                    "Chức vụ đã tồn tại"
-            );
+            System.out.println("Chức vụ đã tồn tại");
             return false;
         }
 
         boolean result = positionRepository.insertPosition(positionName.name().toLowerCase());
         if (result) {
 
-            System.out.println("Tạo mới chức vụ thành công"
-            );
+            System.out.println("Tạo mới chức vụ thành công");
 
         } else {
 
@@ -92,7 +87,7 @@ public class PositionServiceImpl implements IPositionService {
             return false;
         }
 
-        // duplicate except itself
+        // duplicate
         if (positionRepository.existsByNameForUpdate(name.trim().toLowerCase(), id)) {
 
             System.out.println("Chức vụ đã tồn tại");
@@ -129,21 +124,16 @@ public class PositionServiceImpl implements IPositionService {
         // check exists
         if (!positionRepository.existsById(id)) {
 
-            System.out.println(
-                    "Chức vụ không tồn tại"
-            );
-
+            System.out.println("Chức vụ không tồn tại");
             return false;
         }
 
         boolean result = positionRepository.deletePosition(id);
 
         if (result) {
-
             System.out.println("Xóa chức vụ thành công");
 
         } else {
-
             System.out.println("Xóa chức vụ thất bại");
         }
         return result;

@@ -12,7 +12,7 @@ public class DepartmentFunction {
     DepartmentController departmentController = new DepartmentController();
 
     // ================= MENU =================
-    public  void menu() {
+    public void menu() {
 
         while (true) {
 
@@ -70,7 +70,7 @@ public class DepartmentFunction {
     }
 
     //SHOW ALL
-    public  void showAll() {
+    public void showAll() {
 
         List<Department> list = departmentController.getAllDepartments();
 
@@ -89,7 +89,7 @@ public class DepartmentFunction {
     }
 
     //  FIND
-    public  void findByIdAndName() {
+    public void findByIdAndName() {
 
         System.out.print("Nhập ID: ");
         int id = scanner.nextInt();
@@ -115,10 +115,26 @@ public class DepartmentFunction {
     }
 
     //INSERT
-    public  void insert() {
+    public void insert() {
 
-        System.out.print("Nhập tên department: ");
-        String name = scanner.nextLine();
+        String name;
+
+        while (true) {
+
+            System.out.print("Nhập tên phòng ban: ");
+            name = scanner.nextLine();
+
+            if (name.trim().isEmpty()) {
+
+                System.out.println(
+                        "Tên phòng ban không được để trống"
+                );
+
+                continue;
+            }
+
+            break;
+        }
 
         boolean result = departmentController.insertDepartment(name);
 
@@ -126,66 +142,104 @@ public class DepartmentFunction {
     }
 
     //  UPDATE
-    public  void update() {
+    public void update() {
 
-        System.out.print("Nhập ID cần sửa: ");
-        int id = scanner.nextInt();
-        scanner.nextLine();
+        int id;
+        while (true) {
 
-        System.out.print("Nhập tên mới: ");
-        String name = scanner.nextLine();
+            System.out.print("Nhập ID cần sửa: ");
+            id = scanner.nextInt();
+            scanner.nextLine();
 
-        boolean result = departmentController.updateDepartment(id, name);
+            if (id <= 0) {
+                System.out.println("ID phải lớn hơn 0");
+                continue;
+            }
+
+            break;
+        }
+
+        String newName;
+
+        while (true) {
+
+            System.out.print("Tên phòng ban mới: ");
+            newName = scanner.nextLine();
+
+            if (newName.trim().isEmpty()) {
+
+                System.out.println("Tên phòng ban không được để trống");
+                continue;
+            }
+
+            break;
+        }
+
+        boolean result = departmentController.updateDepartment(id, newName);
 
         System.out.println(result ? "Update thành công" : "Update thất bại");
     }
 
-    //  DELETE
-    public  void delete() {
+
+//  DELETE
+public void delete() {
+
+    int id;
+
+    while (true) {
 
         System.out.print("Nhập ID cần xóa: ");
-        int  Id = scanner.nextInt();
+        id = scanner.nextInt();
 
-        boolean result = departmentController.deleteDepartment(Id);
-
-        System.out.println(result ? "Xóa thành công" : "Xóa thất bại");
-    }
-
-    //  MOST EMPLOYEE
-    public  void mostEmployee() {
-
-        List<Department> list = departmentController.getDepartmentHasMostEmployee();
-
-        System.out.println("\n--- DEPARTMENT MOST EMPLOYEE ---");
-
-        TablePrinter.printDepartmentHeader();
-
-        for (Department d : list) {
-            TablePrinter.printDepartmentRow(
-                    d.getDepartmentID(),
-                    d.getDepartmentName()
-            );
+        if (id <= 0) {
+            System.out.println("ID phải lớn hơn 0");
+            continue;
         }
 
-        TablePrinter.printDepartmentFooter();
+        break;
     }
 
-    // EAST EMPLOYEE
-    public  void leastEmployee() {
+    boolean result =
+            departmentController.deleteDepartment(id);
 
-        List<Department> list = departmentController.getDepartmentHasLeastEmployee();
+    System.out.println(result ? "Xóa thành công" : "Xóa thất bại");
+}
 
-        System.out.println("\n--- DEPARTMENT LEAST EMPLOYEE ---");
+//  MOST EMPLOYEE
+public void mostEmployee() {
 
-        TablePrinter.printDepartmentHeader();
+    List<Department> list = departmentController.getDepartmentHasMostEmployee();
 
-        for (Department d : list) {
-            TablePrinter.printDepartmentRow(
-                    d.getDepartmentID(),
-                    d.getDepartmentName()
-            );
-        }
+    System.out.println("\n--- DEPARTMENT MOST EMPLOYEE ---");
 
-        TablePrinter.printDepartmentFooter();
+    TablePrinter.printDepartmentHeader();
+
+    for (Department d : list) {
+        TablePrinter.printDepartmentRow(
+                d.getDepartmentID(),
+                d.getDepartmentName()
+        );
     }
+
+    TablePrinter.printDepartmentFooter();
+}
+
+// EAST EMPLOYEE
+public void leastEmployee() {
+
+    List<Department> list = departmentController.getDepartmentHasLeastEmployee();
+
+    System.out.println("\n--- DEPARTMENT LEAST EMPLOYEE ---");
+
+    TablePrinter.printDepartmentHeader();
+
+    for (Department d : list) {
+        TablePrinter.printDepartmentRow(
+                d.getDepartmentID(),
+                d.getDepartmentName()
+        );
+    }
+
+    TablePrinter.printDepartmentFooter();
+}
 }

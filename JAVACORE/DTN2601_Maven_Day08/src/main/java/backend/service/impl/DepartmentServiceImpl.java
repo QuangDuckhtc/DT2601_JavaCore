@@ -24,36 +24,24 @@ public class DepartmentServiceImpl implements IDepartmentService {
 
         // null
         if (newName == null) {
-            System.out.println(
-                    "Tên phòng ban không được null"
-            );
+            System.out.println("Tên phòng ban không được null");
             return false;
         }
 
         // empty
         if (newName.trim().isEmpty()) {
-
-            System.out.println(
-                    "Tên phòng ban không được để trống"
-            );
-
+            System.out.println("Tên phòng ban không được để trống");
             return false;
         }
 
         // duplicate
         if (departmentRepository.existsByName(newName.trim())) {
 
-            System.out.println(
-                    "Tên phòng ban đã tồn tại"
-            );
-
+            System.out.println("Tên phòng ban đã tồn tại");
             return false;
         }
 
-        boolean result =
-                departmentRepository.insertDepartment(
-                        newName.trim()
-                );
+        boolean result = departmentRepository.insertDepartment(newName.trim());
 
         if (result) {
             System.out.println("Tạo mới phòng ban thành công");
@@ -96,19 +84,14 @@ public class DepartmentServiceImpl implements IDepartmentService {
         // invalid id
         if (id <= 0) {
 
-            System.out.println(
-                    "ID phòng ban phải lớn hơn 0"
-            );
-
+            System.out.println("ID phòng ban phải lớn hơn 0");
             return false;
         }
 
         // check exists
         if (!departmentRepository.existsById(id)) {
 
-            System.out.println(
-                    "Phòng ban không tồn tại"
-            );
+            System.out.println("Phòng ban không tồn tại");
 
             return false;
         }
@@ -128,7 +111,7 @@ public class DepartmentServiceImpl implements IDepartmentService {
             return false;
         }
 
-        // duplicate except itself
+        // duplicate
         if (departmentRepository.existsByNameForUpdate(updateName.trim(), id)) {
 
             System.out.println("Tên phòng ban đã tồn tại");

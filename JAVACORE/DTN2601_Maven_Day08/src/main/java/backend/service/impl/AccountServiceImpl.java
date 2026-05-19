@@ -99,22 +99,13 @@ public class AccountServiceImpl implements IAccountService {
 
         if (!email.matches(regex)) {
 
-            System.out.println(
-                    "Email không đúng định dạng"
-            );
-
+            System.out.println("Email không đúng định dạng");
             return false;
         }
 
         // duplicate email
-        if (accountRepository.existsByEmail(
-                email.trim()
-        )) {
-
-            System.out.println(
-                    "Email đã tồn tại"
-            );
-
+        if (accountRepository.existsByEmail(email.trim())) {
+            System.out.println("Email đã tồn tại");
             return false;
         }
 
@@ -150,38 +141,28 @@ public class AccountServiceImpl implements IAccountService {
 
         boolean result = accountRepository.insertAccount(username.trim(), fullName.trim(), email.trim(), departmentId, positionId);
         if (result) {
-            System.out.println(
-                    "Tạo mới account thành công"
-            );
+            System.out.println("Tạo mới account thành công");
 
         } else {
-
-            System.out.println(
-                    "Tạo mới account thất bại"
-            );
+            System.out.println("Tạo mới account thất bại");
         }
         return result;
     }
 
     @Override
     public boolean updateAccount(int id, String newUsername) {
-        // =====================================================
+
         // CHECK ID > 0
-        // =====================================================
+
 
         if (id <= 0) {
 
-            System.out.println(
-                    "ID account phải lớn hơn 0"
-            );
+            System.out.println("ID account phải lớn hơn 0");
 
             return false;
         }
 
-        // =====================================================
         // CHECK ACCOUNT EXISTS
-        // =====================================================
-
         if (!accountRepository.existsById(id)) {
 
             System.out.println(

@@ -9,10 +9,10 @@ import java.util.Scanner;
 
 public class AccountFunction {
     private static Scanner scanner = new Scanner(System.in);
-   AccountController accountController = new AccountController();
+    AccountController accountController = new AccountController();
 
     // ================= MENU =================
-    public  void menu() {
+    public void menu() {
 
         while (true) {
 
@@ -60,7 +60,7 @@ public class AccountFunction {
     }
 
     //  SHOW ALL
-    public  void showAll() {
+    public void showAll() {
 
         List<Account> list = accountController.getAllAccounts();
 
@@ -103,22 +103,92 @@ public class AccountFunction {
     }
 
     // INSERT
-    public  void insert() {
+    public void insert() {
 
-        System.out.print("Email: ");
-        String email = scanner.nextLine();
+        String email;
 
-        System.out.print("Username: ");
-        String username = scanner.nextLine();
+        while (true) {
 
-        System.out.print("Full name: ");
-        String fullName = scanner.nextLine();
+            System.out.print("Email: ");
+            email = scanner.nextLine();
 
-        System.out.print("Department ID: ");
-        int depId = scanner.nextInt();
+            if (email.trim().isEmpty()) {
 
-        System.out.print("Position ID: ");
-        int posId = scanner.nextInt();
+                System.out.println("Email không được để trống");
+
+                continue;
+            }
+
+            break;
+        }
+
+        String username;
+
+        while (true) {
+
+            System.out.print("Username: ");
+            username = scanner.nextLine();
+
+            if (username.trim().isEmpty()) {
+
+                System.out.println("Username không được để trống");
+
+                continue;
+            }
+
+            break;
+        }
+
+        String fullName;
+
+        while (true) {
+
+            System.out.print("Full name: ");
+            fullName = scanner.nextLine();
+
+            if (fullName.trim().isEmpty()) {
+
+                System.out.println("Full name không được để trống");
+
+                continue;
+            }
+
+            break;
+        }
+
+        int depId;
+
+        while (true) {
+
+            System.out.print("Department ID: ");
+            depId = scanner.nextInt();
+
+            if (depId <= 0) {
+
+                System.out.println("Department ID phải lớn hơn 0");
+                continue;
+            }
+
+            break;
+        }
+
+        int posId;
+
+        while (true) {
+
+            System.out.print("Position ID: ");
+            posId = scanner.nextInt();
+
+            if (posId <= 0) {
+
+                System.out.println("Position ID phải lớn hơn 0");
+
+                continue;
+            }
+
+            break;
+        }
+
         scanner.nextLine();
 
         boolean result = accountController.insertAccount(email, username, fullName, depId, posId);
@@ -127,25 +197,67 @@ public class AccountFunction {
     }
 
     //  UPDATE
-    public  void update() {
+    public void update() {
 
-        System.out.print("Nhập ID cần sửa: ");
-        int id = scanner.nextInt();
-        scanner.nextLine();
+        int id;
 
-        System.out.print("Full name mới: ");
-        String fullName = scanner.nextLine();
+        while (true) {
 
-        boolean result = accountController.updateAccount(id, fullName);
+            System.out.print("Nhập ID cần sửa: ");
+            id = scanner.nextInt();
+            scanner.nextLine();
+
+            if (id <= 0) {
+
+                System.out.println("ID phải lớn hơn 0");
+
+                continue;
+            }
+
+            break;
+        }
+
+        String newUsername;
+
+        while (true) {
+
+            System.out.print("Username mới: ");
+            newUsername = scanner.nextLine();
+
+            if (newUsername.trim().isEmpty()) {
+
+                System.out.println("Username không được để trống");
+
+                continue;
+            }
+
+            break;
+        }
+
+        boolean result = accountController.updateAccount(id, newUsername);
 
         System.out.println(result ? "Update thành công" : "Update thất bại");
     }
 
     // DELETE
-    public  void delete() {
+    public void delete() {
 
-        System.out.print("Nhập id cần xóa: ");
-        int id = scanner.nextInt();
+        int id;
+
+        while (true) {
+
+            System.out.print("Nhập ID cần xóa: ");
+            id = scanner.nextInt();
+
+            if (id <= 0) {
+
+                System.out.println("ID phải lớn hơn 0"
+                );
+                continue;
+            }
+
+            break;
+        }
 
         boolean result = accountController.deleteAccount(id);
 

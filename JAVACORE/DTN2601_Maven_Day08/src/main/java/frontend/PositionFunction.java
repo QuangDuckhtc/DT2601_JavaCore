@@ -114,10 +114,32 @@ public class PositionFunction {
     //  INSERT
     public  void insert() {
 
-        System.out.print("Nhập position name: ");
-        String name = scanner.nextLine();
+        PositionName positionName;
 
-        PositionName positionName = PositionName.valueOf(name.toUpperCase());
+        while (true) {
+
+            try {
+
+                System.out.print("Nhập position name: ");
+                String input =
+                        scanner.nextLine();
+
+                if (input.trim().isEmpty()) {
+
+                    System.out.println("Position name không được để trống");
+
+                    continue;
+                }
+
+                positionName = PositionName.valueOf(input.toUpperCase());
+
+                break;
+
+            } catch (IllegalArgumentException e) {
+
+                System.out.println("Position không hợp lệ");
+            }
+        }
 
         boolean result = positionController.insertPosition(positionName);
 
@@ -127,14 +149,44 @@ public class PositionFunction {
     //  UPDATE
     public  void update() {
 
-        System.out.print("Nhập ID cần sửa: ");
-        int id = scanner.nextInt();
-        scanner.nextLine();
+        int id;
 
-        System.out.print("Nhập name mới: ");
-        String name = scanner.nextLine();
+        while (true) {
 
-        boolean result = positionController.updatePosition(id, name);
+            System.out.print("Nhập ID cần sửa: ");
+
+            id = scanner.nextInt();
+            scanner.nextLine();
+
+            if (id <= 0) {
+
+                System.out.println("ID phải lớn hơn 0");
+
+                continue;
+            }
+
+            break;
+        }
+
+        String newName;
+
+        while (true) {
+
+            System.out.print("Nhập position mới: ");
+
+            newName = scanner.nextLine();
+
+            if (newName.trim().isEmpty()) {
+
+                System.out.println("Position name không được để trống");
+
+                continue;
+            }
+
+            break;
+        }
+
+        boolean result = positionController.updatePosition(id, newName);
 
         System.out.println(result ? "Update thành công" : "Update thất bại");
     }

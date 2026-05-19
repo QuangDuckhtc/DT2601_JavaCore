@@ -35,7 +35,6 @@ public class AccountServiceImpl implements IAccountService {
 
         //null
         if (username == null) {
-
             System.out.println("Username không được null");
             return false;
         }
@@ -48,10 +47,7 @@ public class AccountServiceImpl implements IAccountService {
 
         // duplicate
         if (accountRepository.existsByUsername(username.trim())) {
-            System.out.println(
-                    "Username đã tồn tại"
-            );
-            return false;
+            System.out.println("Username đã tồn tại");return false;
         }
 
         // FULLNAME
@@ -60,8 +56,7 @@ public class AccountServiceImpl implements IAccountService {
         // null
         if (fullName == null) {
 
-            System.out.println(
-                    "Họ tên không được null"
+            System.out.println("Họ tên không được null"
             );
 
             return false;
@@ -70,10 +65,8 @@ public class AccountServiceImpl implements IAccountService {
         // empty
         if (fullName.trim().isEmpty()) {
 
-            System.out.println(
-                    "Họ tên không được để trống"
+            System.out.println("Họ tên không được để trống"
             );
-
             return false;
         }
 
@@ -121,18 +114,15 @@ public class AccountServiceImpl implements IAccountService {
             return false;
         }
 
-        // =====================================================
+
         // POSITION ID
-        // =====================================================
+
 
         if (!positionRepository.existsById(
                 positionId
         )) {
 
-            System.out.println(
-                    "Chức vụ không tồn tại"
-            );
-
+            System.out.println("Chức vụ không tồn tại");
             return false;
         }
 
@@ -196,7 +186,6 @@ public class AccountServiceImpl implements IAccountService {
 
 
         // CHECK DUPLICATE USERNAME
-
 
         if (accountRepository.existsByUsernameForUpdate(newUsername.trim(), id)) {
             System.out.println("Username đã tồn tại");

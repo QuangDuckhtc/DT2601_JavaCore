@@ -57,9 +57,7 @@ public class PositionServiceImpl implements IPositionService {
         // id <= 0
         if (id <= 0) {
 
-            System.out.println(
-                    "ID chức vụ phải lớn hơn 0"
-            );
+            System.out.println("ID chức vụ phải lớn hơn 0");
 
             return false;
         }
@@ -114,9 +112,7 @@ public class PositionServiceImpl implements IPositionService {
         // id <= 0
         if (id <= 0) {
 
-            System.out.println(
-                    "ID chức vụ phải lớn hơn 0"
-            );
+            System.out.println("ID chức vụ phải lớn hơn 0");
 
             return false;
         }

@@ -10,4 +10,6 @@ public interface IAccountService {
     boolean insertAccount(String email, String username, String fullName, int departmentId, int positionId);
     boolean updateAccount(int id, String fullName);
     public  boolean deleteAccount(int id) ;
+
+    String importAccountToCSV(String pathName);
 }

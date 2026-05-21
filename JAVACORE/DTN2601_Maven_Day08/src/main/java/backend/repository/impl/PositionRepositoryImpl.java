@@ -1,6 +1,7 @@
 package backend.repository.impl;
 
 import backend.repository.IPositionRepository;
+import entity.Department;
 import entity.Position;
 import entity.PositionName;
 import utils.DButils;
@@ -8,6 +9,7 @@ import utils.DButils;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -298,8 +300,8 @@ public class PositionRepositoryImpl implements IPositionRepository {
             Connection connection = DButils.getConnection();
 
             String sql = "SELECT COUNT(1) " +
-                            "FROM position " +
-                            "WHERE position_id = ?";
+                    "FROM position " +
+                    "WHERE position_id = ?";
 
             PreparedStatement ps =
                     connection.prepareStatement(sql);

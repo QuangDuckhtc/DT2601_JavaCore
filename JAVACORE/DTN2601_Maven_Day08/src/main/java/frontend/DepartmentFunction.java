@@ -4,6 +4,7 @@ import backend.controller.DepartmentController;
 import entity.Department;
 import utils.TablePrinter;
 
+import java.util.InputMismatchException;
 import java.util.List;
 import java.util.Scanner;
 
@@ -24,11 +25,21 @@ public class DepartmentFunction {
             System.out.println("5. Xóa department");
             System.out.println("6. Department nhiều nhân viên nhất");
             System.out.println("7. Department ít nhân viên nhất");
+            System.out.println("8. Import phòng ban từ file csv ");
             System.out.println("0. Quay lại");
             System.out.print("Chọn: ");
+            int choice;
+            try {
 
-            int choice = scanner.nextInt();
-            scanner.nextLine();
+                choice = scanner.nextInt();
+                scanner.nextLine();
+
+            } catch (InputMismatchException e) {
+
+                System.out.println("Vui lòng nhập số!");
+                scanner.nextLine();
+                continue;
+            }
 
             switch (choice) {
 
@@ -59,7 +70,9 @@ public class DepartmentFunction {
                 case 7:
                     leastEmployee();
                     break;
-
+                case 8:
+                    importDepartmentToCSV();
+                    break;
                 case 0:
                     return;
 
@@ -67,6 +80,14 @@ public class DepartmentFunction {
                     System.out.println("Sai lựa chọn!");
             }
         }
+    }
+
+    private void importDepartmentToCSV() {
+        System.out.println("Nhập địa chỉ file cần import: ");
+        String pathName = scanner.nextLine();
+        departmentController.importDepartmentToCSV(pathName);
+        String message = departmentController.importDepartmentToCSV(pathName);
+        System.out.println(message);
     }
 
     //SHOW ALL
@@ -181,65 +202,66 @@ public class DepartmentFunction {
     }
 
 
-//  DELETE
-public void delete() {
+    //  DELETE
+    public void delete() {
 
-    int id;
+        int id;
 
-    while (true) {
+        while (true) {
 
-        System.out.print("Nhập ID cần xóa: ");
-        id = scanner.nextInt();
+            System.out.print("Nhập ID cần xóa: ");
+            id = scanner.nextInt();
 
-        if (id <= 0) {
-            System.out.println("ID phải lớn hơn 0");
-            continue;
+            if (id <= 0) {
+                System.out.println("ID phải lớn hơn 0");
+                continue;
+            }
+
+            break;
         }
 
-        break;
+        boolean result =
+                departmentController.deleteDepartment(id);
+
+        System.out.println(result ? "Xóa thành công" : "Xóa thất bại");
     }
 
-    boolean result =
-            departmentController.deleteDepartment(id);
+    //  MOST EMPLOYEE
+    public void mostEmployee() {
 
-    System.out.println(result ? "Xóa thành công" : "Xóa thất bại");
-}
+        List<Department> list = departmentController.getDepartmentHasMostEmployee();
 
-//  MOST EMPLOYEE
-public void mostEmployee() {
+        System.out.println("\n--- DEPARTMENT MOST EMPLOYEE ---");
 
-    List<Department> list = departmentController.getDepartmentHasMostEmployee();
+        TablePrinter.printDepartmentHeader();
 
-    System.out.println("\n--- DEPARTMENT MOST EMPLOYEE ---");
+        for (Department d : list) {
+            TablePrinter.printDepartmentRow(
+                    d.getDepartmentID(),
+                    d.getDepartmentName()
+            );
+        }
 
-    TablePrinter.printDepartmentHeader();
-
-    for (Department d : list) {
-        TablePrinter.printDepartmentRow(
-                d.getDepartmentID(),
-                d.getDepartmentName()
-        );
+        TablePrinter.printDepartmentFooter();
     }
 
-    TablePrinter.printDepartmentFooter();
-}
+    // EAST EMPLOYEE
+    public void leastEmployee() {
 
-// EAST EMPLOYEE
-public void leastEmployee() {
+        List<Department> list = departmentController.getDepartmentHasLeastEmployee();
 
-    List<Department> list = departmentController.getDepartmentHasLeastEmployee();
+        System.out.println("\n--- DEPARTMENT LEAST EMPLOYEE ---");
 
-    System.out.println("\n--- DEPARTMENT LEAST EMPLOYEE ---");
+        TablePrinter.printDepartmentHeader();
 
-    TablePrinter.printDepartmentHeader();
+        for (Department d : list) {
+            TablePrinter.printDepartmentRow(
+                    d.getDepartmentID(),
+                    d.getDepartmentName()
+            );
+        }
 
-    for (Department d : list) {
-        TablePrinter.printDepartmentRow(
-                d.getDepartmentID(),
-                d.getDepartmentName()
-        );
+        TablePrinter.printDepartmentFooter();
     }
 
-    TablePrinter.printDepartmentFooter();
-}
 }

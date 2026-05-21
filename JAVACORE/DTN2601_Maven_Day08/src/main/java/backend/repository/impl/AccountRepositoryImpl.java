@@ -10,6 +10,7 @@ import utils.DButils;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -134,7 +135,7 @@ public class AccountRepositoryImpl implements IAccountRepository {
 
             PreparedStatement ps = conn.prepareStatement(sql);
 
-            ps.setString(1,userName);
+            ps.setString(1, userName);
             ps.setInt(2, id);
 
             return ps.executeUpdate() > 0;
@@ -230,8 +231,8 @@ public class AccountRepositoryImpl implements IAccountRepository {
             Connection connection = DButils.getConnection();
 
             String sql = "SELECT COUNT(1) " +
-                            "FROM account " +
-                            "WHERE account_id = ?";
+                    "FROM account " +
+                    "WHERE account_id = ?";
 
             PreparedStatement ps =
                     connection.prepareStatement(sql);
@@ -285,35 +286,89 @@ public class AccountRepositoryImpl implements IAccountRepository {
     }
 
     @Override
-    public boolean existsByUsernameForUpdate(String username, int id) { try {
+    public boolean existsByUsernameForUpdate(String username, int id) {
+        try {
 
-        Connection connection = DButils.getConnection();
+            Connection connection = DButils.getConnection();
 
-        String sql =
-                "SELECT COUNT(1) " +
-                        "FROM account " +
-                        "WHERE username = ? " +
-                        "AND account_id <> ?";
+            String sql =
+                    "SELECT COUNT(1) " +
+                            "FROM account " +
+                            "WHERE username = ? " +
+                            "AND account_id <> ?";
 
-        PreparedStatement ps =
-                connection.prepareStatement(sql);
+            PreparedStatement ps =
+                    connection.prepareStatement(sql);
 
-        ps.setString(1, username);
-        ps.setInt(2, id);
+            ps.setString(1, username);
+            ps.setInt(2, id);
 
-        ResultSet rs = ps.executeQuery();
+            ResultSet rs = ps.executeQuery();
 
-        if (rs.next()) {
+            if (rs.next()) {
 
-            return rs.getInt(1) > 0;
+                return rs.getInt(1) > 0;
+            }
+
+        } catch (Exception e) {
+
+            e.printStackTrace();
         }
 
-    } catch (Exception e) {
-
-        e.printStackTrace();
+        return false;
     }
+
+    @Override
+    public boolean createAccounts(List<Account> accounts) throws SQLException {
+        Connection conn = null;
+        PreparedStatement ps = null;
+
+        try {
+
+            conn = DButils.getConnection();
+            conn.setAutoCommit(false);
+
+            //  DB: email, username, full_name, department_id, position_id
+            String sql = "INSERT INTO account " +
+                    "(email, username, full_name, department_id, position_id) " +
+                    "VALUES (?, ?, ?, ?, ?)";
+
+            ps = conn.prepareStatement(sql);
+
+            for (Account acc : accounts) {
+                ps.setString(1, acc.getEmail());
+                ps.setString(2, acc.getUsername());
+                ps.setString(3, acc.getFullName());
+                ps.setInt(4, acc.getDepartment().getDepartmentID());
+                ps.setInt(5, acc.getPositionName().ordinal() + 1);
+                ps.addBatch();
+            }
+
+            ps.executeBatch();
+            conn.commit();
+
+            return true;
+
+        } catch (Exception e) {
+
+            try {
+                if (conn != null) conn.rollback();
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+
+            e.printStackTrace();
+
+        } finally {
+
+            try {
+                if (ps != null) ps.close();
+                if (conn != null) conn.close();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
 
         return false;
     }
 }
-

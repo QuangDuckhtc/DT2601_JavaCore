@@ -2,6 +2,7 @@ package backend.repository;
 
 import entity.Department;
 
+import java.sql.SQLException;
 import java.util.List;
 
 public interface IDepartmentRepository {
@@ -16,4 +17,9 @@ public interface IDepartmentRepository {
     boolean existsByName(String name);
     boolean existsById(int id);
     boolean existsByNameForUpdate(String name, int id);
+// thêm nhiều department
+
+    boolean createDepartments (List<Department> departments) throws SQLException;
+
+    Department findById(int deptId);
 }

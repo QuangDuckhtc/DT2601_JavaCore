@@ -22,6 +22,7 @@ public class AccountFunction {
             System.out.println("3. Thêm account");
             System.out.println("4. Sửa account");
             System.out.println("5. Xóa account");
+            System.out.println("6. Import  account từ file csv");
             System.out.println("0. Quay lại");
             System.out.print("Chọn: ");
 
@@ -49,7 +50,9 @@ public class AccountFunction {
                 case 5:
                     delete();
                     break;
-
+                case 6:
+                    importDepartmentToCSV();
+                    break;
                 case 0:
                     return;
 
@@ -57,6 +60,16 @@ public class AccountFunction {
                     System.out.println("Sai lựa chọn!");
             }
         }
+    }
+
+    private void importDepartmentToCSV() {
+        System.out.println("Nhập địa chỉ file cần import: ");
+
+        String pathName = scanner.nextLine();
+
+        String message = accountController.importAccountToCSV(pathName);
+
+        System.out.println(message);
     }
 
     //  SHOW ALL

@@ -5,6 +5,7 @@ import java.time.LocalDate;
 public class Account {
     private int accountID;
     private String email;
+    private String username;
     private String fullName;
     private Department department;
     private PositionName positionName;
@@ -13,13 +14,16 @@ public class Account {
     public Account(){
 
     }
-    public Account(int accountID, String email, String fullName, Department department, PositionName positionName, LocalDate createDate) {
+
+
+    public Account(int accountID, LocalDate createDate, PositionName positionName, Department department, String username, String email, String fullName) {
         this.accountID = accountID;
+        this.createDate = createDate;
+        this.positionName = positionName;
+        this.department = department;
+        this.username = username;
         this.email = email;
         this.fullName = fullName;
-        this.department = department;
-        this.positionName = positionName;
-        this.createDate = createDate;
     }
 
     public int getAccountID() {
@@ -38,6 +42,14 @@ public class Account {
         this.email = email;
     }
 
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
     public String getFullName() {
         return fullName;
     }
@@ -54,14 +66,6 @@ public class Account {
         this.department = department;
     }
 
-    public PositionName getPositionName() {
-        return positionName;
-    }
-
-    public void setPositionName(PositionName positionName) {
-        this.positionName = positionName;
-    }
-
     public LocalDate getCreateDate() {
         return createDate;
     }
@@ -70,11 +74,20 @@ public class Account {
         this.createDate = createDate;
     }
 
+    public PositionName getPositionName() {
+        return positionName;
+    }
+
+    public void setPositionName(PositionName positionName) {
+        this.positionName = positionName;
+    }
+
     @Override
     public String toString() {
         return "Account{" +
                 "accountID=" + accountID +
                 ", email='" + email + '\'' +
+                ", username='" + username + '\'' +
                 ", fullName='" + fullName + '\'' +
                 ", department=" + department +
                 ", positionName=" + positionName +

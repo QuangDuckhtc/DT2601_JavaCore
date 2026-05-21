@@ -43,4 +43,8 @@ public class DepartmentController {
     public List<Department> getDepartmentHasLeastEmployee() {
         return iDepartmentService.getDepartmentHasLeastEmployee();
     }
+
+    public String importDepartmentToCSV(String pathName) {// trả về string để thong báo thành công hay thất bại
+        return iDepartmentService.importDepartmentToCSV(pathName);
+    }
 }

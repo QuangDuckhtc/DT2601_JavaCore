@@ -34,4 +34,8 @@ public class AccountController {
     public boolean deleteAccount(int id) {
         return iAccountService.deleteAccount(id);
     }
+
+    public String importAccountToCSV(String pathName) {
+        return iAccountService.importAccountToCSV(pathName);
+    }
 }

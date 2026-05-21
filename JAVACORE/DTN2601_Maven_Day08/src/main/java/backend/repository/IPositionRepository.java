@@ -1,7 +1,9 @@
 package backend.repository;
 
+import entity.Department;
 import entity.Position;
 
+import java.sql.SQLException;
 import java.util.List;
 
 public interface IPositionRepository {
@@ -16,4 +18,7 @@ public interface IPositionRepository {
     boolean existsByName(String name);
     boolean existsByNameForUpdate(String name, int id);
     boolean existsById(int id);
+
+//
+
 }

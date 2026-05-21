@@ -1,7 +1,9 @@
 package backend.repository;
 
 import entity.Account;
+import entity.Department;
 
+import java.sql.SQLException;
 import java.util.List;
 
 public interface IAccountRepository {
@@ -21,4 +23,7 @@ public interface IAccountRepository {
     boolean updateUsername(int id, String newUsername);
 
     boolean existsByUsernameForUpdate(String username, int id);
+
+    // thêm nhiều accounts
+    boolean createAccounts (List<Account> accounts) throws SQLException;
 }

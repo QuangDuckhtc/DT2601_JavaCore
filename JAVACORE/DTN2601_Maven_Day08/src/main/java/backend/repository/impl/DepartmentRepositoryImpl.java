@@ -7,6 +7,7 @@ import utils.DButils;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -322,5 +323,72 @@ public class DepartmentRepositoryImpl implements IDepartmentRepository {
 
         return false;
     }
+
+    // thêm nhiều department
+
+    @Override
+    public boolean createDepartments(List<Department> departments) throws SQLException {
+        Connection conn = null;
+        PreparedStatement ps = null;
+
+        try {
+
+            conn = DButils.getConnection();
+            conn.setAutoCommit(false); // tắt auto conmit để có lỗi thì còn rollback
+            String sql = "INSERT INTO department(department_name) VALUES (?)";
+            ps = conn.prepareStatement(sql);
+            for (Department department : departments) {
+                ps.setString(1, department.getDepartmentName());
+                ps.addBatch();
+            }
+            ps.executeBatch();//thực thi câu lệnh xong
+            conn.commit(); // ko xảy ra lỗi, lưu dữ liệu vào database
+            conn.close();
+            return true;
+        } catch (Exception e) {
+            conn.rollback();// hoàn lại dữ liệu nếu gặp lỗi
+            e.printStackTrace();
+        } finally {
+            conn.close();
+        }
+
+        return false;
+    }
+
+    @Override
+    public Department findById(int deptId) {
+
+
+        try {
+
+            Connection connection = DButils.getConnection();
+
+            String sql = "SELECT * FROM department WHERE department_id = ?";
+
+            PreparedStatement ps = connection.prepareStatement(sql);
+
+            ps.setInt(1,deptId);
+
+            ResultSet rs = ps.executeQuery();
+
+            if (rs.next()) {
+
+                Department dept = new Department();
+
+                dept.setDepartmentID(rs.getInt("department_id"));
+                dept.setDepartmentName(rs.getString("department_name"));
+
+                return dept;
+            }
+
+        } catch (Exception e) {
+
+            e.printStackTrace();
+        }
+
+        return null;
+    }
 }
+
+
 

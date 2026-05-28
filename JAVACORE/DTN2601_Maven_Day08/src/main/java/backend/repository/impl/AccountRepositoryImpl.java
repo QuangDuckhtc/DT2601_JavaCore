@@ -7,12 +7,11 @@ import entity.Position;
 import entity.PositionName;
 import utils.DButils;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class AccountRepositoryImpl implements IAccountRepository {
 
@@ -370,5 +369,93 @@ public class AccountRepositoryImpl implements IAccountRepository {
         }
 
         return false;
+    }
+
+    @Override
+    public Map<String, Account> mapAccountByEmail() {
+        Map<String, Account> map = new HashMap<>();
+
+        try {
+
+            // kết nối DB
+            Connection connection = DButils.getConnection();
+
+            // SQL
+            String sql = "SELECT * FROM account";
+
+            Statement statement = connection.createStatement();
+
+            ResultSet rs = statement.executeQuery(sql);
+
+            // loop từng dòng
+            while (rs.next()) {
+
+                int id = rs.getInt("account_id");
+
+                String username = rs.getString("username");
+
+                String fullName = rs.getString("full_name");
+
+                String email = rs.getString("email");
+
+                Account account = new Account();
+
+                account.setAccountID(id);
+
+                account.setUsername(username);
+
+                account.setFullName(fullName);
+
+                account.setEmail(email);
+
+                // put email vào map
+                map.put(email.trim().toLowerCase(), account);
+            }
+            // đóng kết nối
+            DButils.close(connection, statement, rs);
+
+        } catch (Exception e) {
+
+            e.printStackTrace();
+        }
+
+        return map;
+    }
+
+    @Override
+    public Map<String, Account> mapAccountByUsername() {
+        Map<String, Account> map =
+                new HashMap<>();
+
+        try {
+
+            Connection connection = DButils.getConnection();
+
+            String sql = "SELECT username FROM account";
+
+            Statement statement = connection.createStatement();
+
+            ResultSet rs = statement.executeQuery(sql);
+
+            while (rs.next()) {
+
+                String username = rs.getString("username");
+
+                Account account = new Account();
+
+                account.setUsername(username);
+
+                map.put(username.trim().toLowerCase(), account);
+            }
+
+            DButils.close(connection, statement, rs
+            );
+
+        } catch (Exception e) {
+
+            e.printStackTrace();
+        }
+
+        return map;
     }
 }

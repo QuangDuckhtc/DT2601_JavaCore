@@ -2,6 +2,7 @@ package frontend;
 
 import backend.controller.PositionController;
 
+import java.sql.SQLException;
 import java.util.Scanner;
 
 public class Menu {
@@ -11,7 +12,7 @@ public class Menu {
     AccountFunction accountFunction = new AccountFunction();
     PositionFunction positionFunction = new PositionFunction();
 
-    public void run (){
+    public void run () throws SQLException {
 
         while (true) {
 

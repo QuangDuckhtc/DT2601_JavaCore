@@ -6,6 +6,7 @@ import backend.service.IAccountService;
 import backend.service.impl.AccountServiceImpl;
 import entity.Account;
 
+import java.sql.SQLException;
 import java.util.List;
 
 public class AccountController {
@@ -35,7 +36,7 @@ public class AccountController {
         return iAccountService.deleteAccount(id);
     }
 
-    public String importAccountToCSV(String pathName) {
+    public String importAccountToCSV(String pathName) throws SQLException {
         return iAccountService.importAccountToCSV(pathName);
     }
 }

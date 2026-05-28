@@ -4,6 +4,7 @@ import backend.controller.AccountController;
 import entity.Account;
 import utils.TablePrinter;
 
+import java.sql.SQLException;
 import java.util.List;
 import java.util.Scanner;
 
@@ -12,7 +13,7 @@ public class AccountFunction {
     AccountController accountController = new AccountController();
 
     // ================= MENU =================
-    public void menu() {
+    public void menu() throws SQLException {
 
         while (true) {
 
@@ -62,7 +63,7 @@ public class AccountFunction {
         }
     }
 
-    private void importDepartmentToCSV() {
+    private void importDepartmentToCSV() throws SQLException {
         System.out.println("Nhập địa chỉ file cần import: ");
 
         String pathName = scanner.nextLine();

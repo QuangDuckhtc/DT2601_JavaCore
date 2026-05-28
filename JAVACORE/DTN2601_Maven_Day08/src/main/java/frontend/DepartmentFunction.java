@@ -4,6 +4,7 @@ import backend.controller.DepartmentController;
 import entity.Department;
 import utils.TablePrinter;
 
+import java.sql.SQLException;
 import java.util.InputMismatchException;
 import java.util.List;
 import java.util.Scanner;
@@ -13,7 +14,7 @@ public class DepartmentFunction {
     DepartmentController departmentController = new DepartmentController();
 
     // ================= MENU =================
-    public void menu() {
+    public void menu() throws SQLException {
 
         while (true) {
 
@@ -82,11 +83,13 @@ public class DepartmentFunction {
         }
     }
 
-    private void importDepartmentToCSV() {
+    private void importDepartmentToCSV() throws SQLException {
         System.out.println("Nhập địa chỉ file cần import: ");
+
         String pathName = scanner.nextLine();
-        departmentController.importDepartmentToCSV(pathName);
+
         String message = departmentController.importDepartmentToCSV(pathName);
+
         System.out.println(message);
     }
 

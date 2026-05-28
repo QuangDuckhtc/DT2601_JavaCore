@@ -4,11 +4,15 @@ import backend.repository.IDepartmentRepository;
 import backend.repository.impl.DepartmentRepositoryImpl;
 import backend.service.IDepartmentService;
 import dto.ImportError;
+import dto.context.DepartmentContext;
+import dto.csv.DepartmentCsv;
 import entity.Department;
 
 import java.io.*;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 
 public class DepartmentServiceImpl implements IDepartmentService {
@@ -153,73 +157,72 @@ public class DepartmentServiceImpl implements IDepartmentService {
     // row nào gặp lỗi xuất ra file lỗi
     // row nào lo lỗi thì import bình thường
     @Override
-    public String importDepartmentToCSV(String pathName) {//pathName đường dẫn file trong máy
-//        dùng bufferReader
-//        FileReader fr = new FileReader(pathName); // đọc file từ path, đọc từng chữ cái
-//        BufferedReader br = new BufferedReader((fr)); // đọc theo từng dòng
+    public String importDepartmentToCSV(String pathName) throws SQLException {//pathName đường dẫn file trong máy
+        Map<String, Department> mapDepartmentByName = departmentRepository.mapDepartmentByName();
+        DepartmentContext context = new DepartmentContext(mapDepartmentByName);
+        return this.importFile(pathName, context, "E:\\DT2601_JavaCore\\file csv\\output_department_error.csv");
 
-        List<Department> departments = new ArrayList<>();
-        List<ImportError> importErrors = new ArrayList<>();
-        boolean firstLine = true;
-        boolean checkImport = false;
-        String message = "";
-        try (BufferedReader br = new BufferedReader((new FileReader(pathName)))) {
-//            String line = br.readLine();// đang đọc 1 dòng
-            List<String> errors = new ArrayList<>();
+    }
 
-            String line;
+    @Override
+    public List<DepartmentCsv> readFile(String pathName) {
+        List<DepartmentCsv> csvs = new ArrayList<>();
+        try (BufferedReader br = new BufferedReader(new FileReader(pathName))) {
+            String line = br.readLine();// bo di hang header
             while ((line = br.readLine()) != null) {
-//              bỏ qua dòng đầu tiên header
-
-                if (firstLine){
-                    firstLine = false;
-                    continue;
-                }
-                String[] fields = line.split(",");
-                String departmentName = fields[0];
-                // validation dữ liệu
-                 if (Objects.isNull(departmentName) || departmentName.trim().isEmpty()){
-                     //tên phòng ban không được trống
-                        errors.add("tên phòng không được trống");
-                 }
-                 if ( departmentRepository.existsByName(departmentName)){
-                     // ten phong ban da ton tai
-                     errors.add("Tên phòng ban đã tồn tại");
-                 }
-                 if(errors.isEmpty()){//nếu không có lỗi th thêm vào ds lưu vào DB
-                     Department depp = new Department(departmentName);
-                     departments.add(depp);
-                 }else{
-                    importErrors.add(new ImportError(line, String.join(" | ", errors)));
-                 }
-
-
+                // logic doc file
+                String[] fileds = line.split(",", -1);
+                DepartmentCsv departmentCsv = new DepartmentCsv(fileds[0]);
+                csvs.add(departmentCsv);
             }
-            // validation dữ liệu
 
-//            //insert vào database
-//            for ( Department department : departments){
-//                departmentRepository.insertDepartment((department.getDepartmentName()));
-//            }
-            // xuất ra file list import Errors ra file csv
-            String pathError = "E:\\DT2601_JavaCore\\file csv\\output_department_error.csv";
-            try(BufferedWriter bw = new BufferedWriter(new FileWriter((pathError)))){
-                bw.write("department_name, message_error");
-                for(ImportError err: importErrors){
-                    bw.write(err.getLine() + "," + err.getMessage());
-                    bw.newLine();
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-            if ( !departments.isEmpty()){
-                checkImport =  departmentRepository.createDepartments(departments);
+        } catch (Exception e) {
+        }
+        return csvs;
+    }
+
+    @Override
+    public void validation(DepartmentCsv departmentCsv, DepartmentContext context, List<ImportError> importErrors, List<Department> entities) {
+        List<String> errors = new ArrayList<>();// luu lai ds loi cua line này
+        String departmentName = departmentCsv.getName().trim().toLowerCase();
+
+        if (Objects.isNull(departmentName) || departmentName.trim().isEmpty()) {
+            errors.add("Tên phòng ban không được để trống");
+        } else if (context.getMapByName().containsKey(departmentName)) {
+            errors.add("Tên phòng ban đã tồn tại");
+        }
+
+        if (errors.isEmpty()) {// nếu ko có lỗi thì thêm vào ds để lưu vào DB
+            Department dep = new Department(departmentName);
+            entities.add(dep);
+            // moi khi có department hop le thi se them luôn vào map để check trùng các row sau
+            Map<String, Department> map = context.getMapByName();
+            map.put(departmentName, dep);
+            context.setMapByName(map);
+        } else {// có lỗi thì xuất ra
+            importErrors.add(new ImportError(departmentName, String.join(" | ", errors)));
+        }
+    }
+
+    @Override
+    public void saveAll(List<Department> entities) throws SQLException {
+        departmentRepository.createDepartments(entities);
+    }
+
+    @Override
+    public void exportFileError(List<ImportError> importErrors, String pathError) {
+        try (BufferedWriter bw = new BufferedWriter(new FileWriter(pathError))) {
+            bw.write("depatment_name,message_error");
+            bw.newLine();
+            for (ImportError error : importErrors) {
+                bw.write(error.getLine() + "," + error.getMessage());
+                bw.newLine();
             }
         } catch (Exception e) {
-//            message = "import lỗi" + e.getMessage();
+            e.printStackTrace();
         }
-        return checkImport ? "import thành công" : "import lỗi, đã xuất file ra E:\\DT2601_JavaCore\\file csv\\output_department_error.csv";
     }
+
 }
 
 //E:\DT2601_JavaCore\file csv\input_department.csv

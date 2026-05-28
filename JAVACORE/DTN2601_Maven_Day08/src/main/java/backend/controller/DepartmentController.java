@@ -6,6 +6,7 @@ import backend.service.IDepartmentService;
 import backend.service.impl.DepartmentServiceImpl;
 import entity.Department;
 
+import java.sql.SQLException;
 import java.util.List;
 
 public class DepartmentController {
@@ -44,7 +45,7 @@ public class DepartmentController {
         return iDepartmentService.getDepartmentHasLeastEmployee();
     }
 
-    public String importDepartmentToCSV(String pathName) {// trả về string để thong báo thành công hay thất bại
+    public String importDepartmentToCSV(String pathName) throws SQLException {// trả về string để thong báo thành công hay thất bại
         return iDepartmentService.importDepartmentToCSV(pathName);
     }
 }

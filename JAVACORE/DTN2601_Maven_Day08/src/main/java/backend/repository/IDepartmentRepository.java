@@ -4,6 +4,7 @@ import entity.Department;
 
 import java.sql.SQLException;
 import java.util.List;
+import java.util.Map;
 
 public interface IDepartmentRepository {
     List<Department> getAllDepartments();
@@ -20,6 +21,9 @@ public interface IDepartmentRepository {
 // thêm nhiều department
 
     boolean createDepartments (List<Department> departments) throws SQLException;
-
     Department findById(int deptId);
+//
+    Map<String, Department> mapDepartmentByName();
+
+    Map<Integer, Department> mapDepartmentById();
 }

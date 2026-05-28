@@ -5,6 +5,7 @@ import entity.Department;
 
 import java.sql.SQLException;
 import java.util.List;
+import java.util.Map;
 
 public interface IAccountRepository {
     List<Account> getAllAccounts();
@@ -26,4 +27,8 @@ public interface IAccountRepository {
 
     // thêm nhiều accounts
     boolean createAccounts (List<Account> accounts) throws SQLException;
+
+    Map<String, Account> mapAccountByEmail();
+
+    Map<String, Account> mapAccountByUsername();
 }

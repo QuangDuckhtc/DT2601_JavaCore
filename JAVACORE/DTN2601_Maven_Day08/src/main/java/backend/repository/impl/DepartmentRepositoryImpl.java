@@ -4,12 +4,11 @@ import backend.repository.IDepartmentRepository;
 import entity.Department;
 import utils.DButils;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class DepartmentRepositoryImpl implements IDepartmentRepository {
 
@@ -387,6 +386,72 @@ public class DepartmentRepositoryImpl implements IDepartmentRepository {
         }
 
         return null;
+    }
+
+    @Override
+    public Map<String, Department> mapDepartmentByName() {
+        Map<String, Department> map = new HashMap<>();// lưu lại dữ liệu lấy từ DB
+        try {
+            // b1: kết nối đến DB
+            Connection connection = DButils.getConnection();
+            // b2: lấy dữ liệu từ bảng department
+            String sql = "select * from department order by department_id asc;";
+            Statement statement = connection.createStatement();
+            ResultSet rs = statement.executeQuery(sql);// thực thi câu lệnh sql và gán bảng trả ra vào ResultSet rs
+            while (rs.next()) {// lặp qua qua từng dòng của rs
+                int id = rs.getInt("department_id");// lấy giá trị từ cloumn department_id
+                String name = rs.getString("department_name");//lấy giá trị từ cloumn department_name
+
+                Department dep = new Department(id, name);
+                map.put(name.trim().toLowerCase(), dep);
+            }
+            // đóng các kết nối
+            DButils.close(connection, statement, rs);
+        } catch (Exception e) {// show các lỗi lien quan đén logic xử lý
+            e.printStackTrace();// show ra exception
+        }
+        return map;
+    }
+
+    @Override
+    public Map<Integer, Department> mapDepartmentById() {
+        Map<Integer, Department> map =
+                new HashMap<>();
+
+        try {
+
+            // kết nối DB
+            Connection connection = DButils.getConnection();
+
+            // SQL
+            String sql = "SELECT * FROM department";
+
+            Statement statement = connection.createStatement();
+
+            ResultSet rs = statement.executeQuery(sql);
+
+            // loop từng dòng
+            while (rs.next()) {
+
+                int id = rs.getInt("department_id");
+
+                String name = rs.getString("department_name");
+
+                Department department = new Department(id, name);
+
+                // put vào map
+                map.put(id, department);
+            }
+
+            // đóng kết nối
+            DButils.close(connection, statement, rs);
+
+        } catch (Exception e) {
+
+            e.printStackTrace();
+        }
+
+        return map;
     }
 }
 

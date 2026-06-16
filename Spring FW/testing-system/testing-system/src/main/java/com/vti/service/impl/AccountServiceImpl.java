@@ -1,7 +1,11 @@
 package com.vti.service.impl;
 
 import com.vti.entity.Account;
+import com.vti.entity.Department;
+import com.vti.entity.Position;
 import com.vti.repository.IAccountRepository;
+import com.vti.repository.IDepartmentRepository;
+import com.vti.repository.IPositionRepository;
 import com.vti.service.IAccountService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -15,14 +19,20 @@ public class AccountServiceImpl implements IAccountService {
     @Autowired
     private IAccountRepository accountRepository;
 
+    @Autowired
+    private IDepartmentRepository departmentRepository;
+
+    @Autowired
+    private IPositionRepository positionRepository;
+
     @Override
     public List<Account> findAll() {
         return accountRepository.findAll();
     }
 
     @Override
-    public List<Account> findByFullname(String name) {
-        return accountRepository.findByFullnameContaining(name);
+    public List<Account> findByFullname(String search) {
+        return accountRepository.findByFullnameContaining(search);
     }
 
     @Override
@@ -32,34 +42,36 @@ public class AccountServiceImpl implements IAccountService {
 
     @Override
     public Account create(Account account) {
-        //  .set của Lombok
-        Account newAcc = new Account(
-                null,
-                account.getEmail(),
-                account.getUsername(),
-                account.getFullname(),
-                account.getDepartmentId(),
-                account.getPositionId(),
-                null
-        );
-        return accountRepository.save(newAcc);
+        // Kiểm tra và kết nối với  Department thực tế từ DB
+        if (account.getDepartment() != null && account.getDepartment().getDepartmentId() != null) {
+            Department dept = departmentRepository.findById(account.getDepartment().getDepartmentId()).orElse(null);
+            account.setDepartment(dept);
+        }
+
+        // Kiểm tra và kết nối với Position thực tế từ DB
+        if (account.getPosition() != null && account.getPosition().getPositionId() != null) {
+            Position pos = positionRepository.findById(account.getPosition().getPositionId()).orElse(null);
+            account.setPosition(pos);
+        }
+
+        return accountRepository.save(account);
     }
 
     @Override
     public Account update(Integer id, Account account) {
-        Optional<Account> optional = accountRepository.findById(id);
-        if (optional.isPresent()) {
-            Account existingAcc = optional.get();
-            Account updatedAcc = new Account(
-                    id,
-                    account.getEmail(),
-                    account.getUsername(),
-                    account.getFullname(),
-                    account.getDepartmentId(),
-                    account.getPositionId(),
-                    existingAcc.getCreateDate() // Giữ nguyên ngày tạo cũ
-            );
-            return accountRepository.save(updatedAcc);
+        if (accountRepository.existsById(id)) {
+            account.setId(id);
+
+            if (account.getDepartment() != null && account.getDepartment().getDepartmentId() != null) {
+                Department dept = departmentRepository.findById(account.getDepartment().getDepartmentId()).orElse(null);
+                account.setDepartment(dept);
+            }
+            if (account.getPosition() != null && account.getPosition().getPositionId() != null) {
+                Position pos = positionRepository.findById(account.getPosition().getPositionId()).orElse(null);
+                account.setPosition(pos);
+            }
+
+            return accountRepository.save(account);
         }
         return null;
     }

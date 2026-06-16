@@ -1,10 +1,9 @@
 package com.vti.entity;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
+
+import java.util.List;
 
 @Getter // Tự sinh các hàm lấy dữ liệu (getId, getName)
 @Setter // Tự sinh các hàm gán dữ liệu (setId, setName)
@@ -14,11 +13,15 @@ import lombok.Setter;
 @Table(name = "department") // Ánh xạ bảng database
 public class Department {
 
-    @Id // Khóa chính
-    @Column(name = "department_id") // Khớp cột database
-    @GeneratedValue(strategy = GenerationType.IDENTITY) // Tự động tăng
-    private Integer id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "department_id")
+    private Integer departmentId;
 
-    @Column(name = "department_name", nullable = false, unique = true, length = 100) // Cấu hình cột name
-    private String name;
+    @Column(name = "department_name", length = 100, nullable = false, unique = true)
+    private String departmentName;
+
+    @OneToMany(mappedBy = "department")
+    @ToString.Exclude
+    private List<Account> accounts;
 }

@@ -18,7 +18,7 @@ public class AccountController {
 
     // Lấy tất cả hoặc tìm kiếm theo fullname
     @GetMapping
-    public ResponseEntity<List<Account>> findAll( @RequestParam(value = "search", required = false) String search) {
+    public ResponseEntity<List<Account>> findAll(@RequestParam(value = "search", required = false) String search) {
         List<Account> accounts;
         if (search != null && !search.isEmpty()) {
             accounts = accountService.findByFullname(search);
@@ -30,7 +30,7 @@ public class AccountController {
 
     // Lấy theo ID
     @GetMapping("/{id}")
-    public ResponseEntity<Account> findById( @PathVariable Integer id) {
+    public ResponseEntity<Account> findById(@PathVariable Integer id) {
         Account account = accountService.findById(id);
         if (account != null) {
             return new ResponseEntity<>(account, HttpStatus.OK);
@@ -39,16 +39,15 @@ public class AccountController {
     }
 
     // Thêm mới
-    // POST Body JSON: {"email": "vti1@gmail.com", "username": "vti1", "fullname": "Nguyen Van B", "departmentId": 1, "positionId": 2}
     @PostMapping
-    public ResponseEntity<Account> create( @RequestBody Account account) {
+    public ResponseEntity<Account> create(@RequestBody Account account) {
         Account createdAcc = accountService.create(account);
         return new ResponseEntity<>(createdAcc, HttpStatus.CREATED);
     }
 
     // Cập nhật
     @PutMapping("/{id}")
-    public ResponseEntity<Account> update( @PathVariable Integer id, @RequestBody Account account) {
+    public ResponseEntity<Account> update(@PathVariable Integer id, @RequestBody Account account) {
         Account updatedAcc = accountService.update(id, account);
         if (updatedAcc != null) {
             return new ResponseEntity<>(updatedAcc, HttpStatus.OK);
@@ -58,10 +57,10 @@ public class AccountController {
 
     // Xóa
     @DeleteMapping("/{id}")
-    public ResponseEntity<String> delete( @PathVariable Integer id) {
+    public ResponseEntity<String> delete(@PathVariable Integer id) {
         if (accountService.delete(id)) {
-            return new ResponseEntity<>("Deleted successfully!", HttpStatus.OK);
+            return new ResponseEntity<>("Xóa thành công !", HttpStatus.OK);
         }
-        return new ResponseEntity<>("Not found ID!", HttpStatus.NOT_FOUND);
+        return new ResponseEntity<>("ID không tồn tại !", HttpStatus.NOT_FOUND);
     }
 }

@@ -16,19 +16,21 @@ public class DepartmentController {
     @Autowired
     private IDepartmentService departmentService;
 
-    // Lấy tất cả hoặc tìm kiếm theo tên
+    // 1. Lấy tất cả hoặc Tìm kiếm theo tên
+    // Lấy tất cả: GET http://localhost:8080/api/departments
+    // Tìm theo tên: GET http://localhost:8080/api/departments?name=Phòng Giám Đốc
     @GetMapping
-    public ResponseEntity<List<Department>> findAll(@RequestParam(value = "search", required = false) String search) {
+    public ResponseEntity<List<Department>> findAllOrSearch(@RequestParam(value = "name", required = false) String name) {
         List<Department> departments;
-        if (search != null && !search.isEmpty()) {
-            departments = departmentService.findByName(search);
+        if (name != null && !name.isEmpty()) {
+            departments = departmentService.findByName(name);
         } else {
             departments = departmentService.findAll();
         }
         return new ResponseEntity<>(departments, HttpStatus.OK);
     }
 
-    // Lấy theo ID
+    // 2. Tìm theo ID: GET http://localhost:8080/api/departments/{id}
     @GetMapping("/{id}")
     public ResponseEntity<Department> findById(@PathVariable Integer id) {
         Department department = departmentService.findById(id);
@@ -38,29 +40,31 @@ public class DepartmentController {
         return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 
-    // Thêm mới
+    // 3. Thêm mới
+    // POST http://localhost:8080/api/departments?name=Phòng Marketing
     @PostMapping
-    public ResponseEntity<Department> create(@RequestBody Department dept) {
-        Department createdDept = departmentService.create(dept.getName());
+    public ResponseEntity<Department> create(@RequestParam String name) {
+        Department createdDept = departmentService.create(name);
         return new ResponseEntity<>(createdDept, HttpStatus.CREATED);
     }
 
-    // Cập nhật
+    // 4. Cập nhật
+    // PUT http://localhost:8080/api/departments/1?newName=Phòng Kế Toán Nâng Cấp
     @PutMapping("/{id}")
-    public ResponseEntity<Department> update(@PathVariable Integer id, @RequestBody Department dept) {
-        Department updatedDept = departmentService.update(id, dept.getName());
+    public ResponseEntity<Department> update(@PathVariable Integer id, @RequestParam String newName) {
+        Department updatedDept = departmentService.update(id, newName);
         if (updatedDept != null) {
             return new ResponseEntity<>(updatedDept, HttpStatus.OK);
         }
         return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 
-    // Xóa
+    // 5. Xóa: DELETE http://localhost:8080/api/departments/{id}
     @DeleteMapping("/{id}")
     public ResponseEntity<String> delete(@PathVariable Integer id) {
         if (departmentService.delete(id)) {
-            return new ResponseEntity<>("Deleted successfully!", HttpStatus.OK);
+            return new ResponseEntity<>(" Xóa thành công !", HttpStatus.OK);
         }
-        return new ResponseEntity<>("Not found ID!", HttpStatus.NOT_FOUND);
+        return new ResponseEntity<>("ID không tồn tại !", HttpStatus.NOT_FOUND);
     }
 }

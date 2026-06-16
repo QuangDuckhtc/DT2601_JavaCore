@@ -12,7 +12,7 @@ import java.util.Optional;
 @Service
 public class DepartmentServiceImpl implements IDepartmentService {
 
-    @Autowired // Khởi tạo tự động đối tượng Repository
+    @Autowired
     private IDepartmentRepository departmentRepository;
 
     @Override
@@ -22,29 +22,30 @@ public class DepartmentServiceImpl implements IDepartmentService {
 
     @Override
     public List<Department> findByName(String name) {
-        return departmentRepository.findByNameContaining(name);
+        return departmentRepository.findByDepartmentName(name);
     }
 
     @Override
     public Department findById(Integer id) {
-        Optional<Department> optional = departmentRepository.findById(id);
-        return optional.orElse(null);
+        return departmentRepository.findById(id).orElse(null);
     }
 
     @Override
     public Department create(String name) {
-        Department dept = new Department();
-        dept.setName(name);
-        return departmentRepository.save(dept); // Lưu mới (id tự tăng)
+        // Tự tạo Object Department mới rồi gán name vào để lưu xuống DB
+        Department department = new Department();
+        department.setDepartmentName(name);
+        return departmentRepository.save(department);
     }
 
     @Override
     public Department update(Integer id, String newName) {
-        Optional<Department> optionalDept = departmentRepository.findById(id);
-        if (optionalDept.isPresent()) {
-            Department dept = optionalDept.get();
-            dept.setName(newName);
-            return departmentRepository.save(dept); // Lưu cập nhật (vì đã có id)
+        // Kiểm tra xem phòng ban cần sửa có tồn tại không
+        if (departmentRepository.existsById(id)) {
+            Department department = new Department();
+            department.setDepartmentId(id);       // Giữ nguyên ID cũ
+            department.setDepartmentName(newName); // Cập nhật tên mới
+            return departmentRepository.save(department);
         }
         return null;
     }

@@ -1,12 +1,11 @@
 package com.vti.entity;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.time.LocalDateTime;
+import java.util.Date;
+import java.util.List;
 
 @Getter
 @Setter
@@ -17,25 +16,36 @@ import java.time.LocalDateTime;
 public class Account {
 
     @Id
-    @Column(name = "account_id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "account_id")
     private Integer id;
 
-    @Column(name = "email", nullable = false, unique = true, length = 100)
+    @Column(name = "email", length = 100, nullable = false, unique = true)
     private String email;
 
-    @Column(name = "user_name", nullable = false, unique = true, length = 100)
+    @Column(name = "user_name", length = 100, nullable = false, unique = true)
     private String username;
 
-    @Column(name = "full_name", nullable = false, unique = true, length = 100)
+    @Column(name = "full_name", length = 100, nullable = false, unique = true)
     private String fullname;
 
-    @Column(name = "department_id")
-    private Integer departmentId; // bỏ qua khóa ngoại
+    @ManyToOne
+    @JoinColumn(name = "department_id")
+    private Department department;
 
-    @Column(name = "position_id")
-    private Integer positionId;   //  bỏ qua khóa ngoại
+    @ManyToOne
+    @JoinColumn(name = "position_id")
+    private Position position;
 
+    @OneToMany(mappedBy = "creator")
+    @ToString.Exclude
+    private List<Group> createdGroups;
+
+    @OneToMany(mappedBy = "account")
+    @ToString.Exclude
+    private List<GroupAccount> groupAccounts;
+
+    @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "create_date", insertable = false, updatable = false)
-    private LocalDateTime createDate;
+    private Date createDate;
 }

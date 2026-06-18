@@ -1,19 +1,29 @@
 package com.vti.service;
 
+import com.vti.DTO.DepartmentDTO;
 import com.vti.entity.Department;
+import com.vti.form.DepartmentCreateForm;
+import com.vti.form.DepartmentUpdateForm;
 
 import java.util.List;
 
 public interface IDepartmentService {
-    List<Department> findAll();                 // Lấy tất cả
+    // findALL theo DTO
+    List<DepartmentDTO> findAll();                 // Lấy tất cả
 
     List<Department> findByName(String name);    // Tìm theo tên
 
-    Department findById(Integer id);            // Tìm theo ID
+    DepartmentDTO findById(Integer id);            // Tìm theo ID
 
     Department create(String name);             // Thêm mới (Truyền String name)
 
     Department update(Integer id, String newName); // Cập nhật (Truyền String newName)
 
     boolean delete(Integer id);
+
+    // create + update theo form
+
+    void create(DepartmentCreateForm form);
+
+    void update(Integer id, DepartmentUpdateForm form);
 }

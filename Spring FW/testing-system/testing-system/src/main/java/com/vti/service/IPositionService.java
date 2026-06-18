@@ -1,14 +1,29 @@
 package com.vti.service;
 
+import com.vti.DTO.PositionDTO;
 import com.vti.entity.Position;
+import com.vti.form.PositionCreateForm;
+import com.vti.form.PositionUpdateForm;
 
 import java.util.List;
 
 public interface IPositionService {
-    List<Position> findAll();                  // Lấy tất cả chức vụ
-    Position findById(Integer id);             // Tìm chức vụ theo ID
-    Position findByName(String name);          // Tìm chức vụ theo chuỗi chữ thô (Ví dụ: "Dev")
-    Position create(String name);              // Thêm mới chức vụ (Truyền chuỗi chữ thô)
-    Position update(Integer id, String newName); // Cập nhật tên chức vụ mới
-    boolean delete(Integer id);                // Xóa chức vụ
+    // DTO với findALL và findbyID
+
+    List<PositionDTO> findAll();
+
+    PositionDTO findById(Integer id);// Tìm chức vụ theo ID
+
+    Position findByName(String name);
+
+    Position create(String name);
+
+    Position update(Integer id, String newName);
+
+    boolean delete(Integer id);
+
+
+// dùng form với create và update
+    void create(PositionCreateForm form);
+    void update(Integer id, PositionUpdateForm form);
 }

@@ -26,6 +26,10 @@ public class Account {
     @Column(name = "user_name", length = 100, nullable = false, unique = true)
     private String username;
 
+    // THÊM DÒNG NÀY THEO CHUẨN JPA SPRING BOOT:
+    @Column(name = "password", length = 80, nullable = false)
+    private String password;
+
     @Column(name = "full_name", length = 100, nullable = false, unique = true)
     private String fullname;
 

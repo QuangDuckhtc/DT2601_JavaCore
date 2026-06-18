@@ -1,12 +1,18 @@
 package com.vti.service.impl;
 
+import com.vti.DTO.DepartmentDTO;
 import com.vti.entity.Department;
+import com.vti.form.DepartmentCreateForm;
+import com.vti.form.DepartmentUpdateForm;
 import com.vti.repository.IDepartmentRepository;
 import com.vti.service.IDepartmentService;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 @Service
@@ -15,19 +21,41 @@ public class DepartmentServiceImpl implements IDepartmentService {
     @Autowired
     private IDepartmentRepository departmentRepository;
 
+    @Autowired
+    private ModelMapper modelMapper;
+
+    // dùng DTO
     @Override
-    public List<Department> findAll() {
-        return departmentRepository.findAll();
+    public List<DepartmentDTO> findAll() {
+
+        List<Department> departments = departmentRepository.findAll();
+
+        List<DepartmentDTO> dtos = new ArrayList<>();
+
+
+        for (Department dept : departments) {
+            DepartmentDTO dto = modelMapper.map(dept, DepartmentDTO.class);
+            dtos.add(dto);
+        }
+
+        return dtos;
     }
 
     @Override
     public List<Department> findByName(String name) {
         return departmentRepository.findByDepartmentName(name);
     }
-
+// dùng DTO
     @Override
-    public Department findById(Integer id) {
-        return departmentRepository.findById(id).orElse(null);
+    public DepartmentDTO findById(Integer id) {
+        // 1. Tìm Entity dưới DB
+        Department department = departmentRepository.findById(id).orElse(null);
+        if (department == null) {
+            return null;
+        }
+
+        // 2. Map sang DTO và trả về
+        return modelMapper.map(department, DepartmentDTO.class);
     }
 
     @Override
@@ -57,5 +85,28 @@ public class DepartmentServiceImpl implements IDepartmentService {
             return true;
         }
         return false;
+    }
+
+    @Override
+    public void create(DepartmentCreateForm form) {
+        Department department = new Department();
+
+        // Bốc name từ trong Form ra để set vào Entity
+        department.setDepartmentName(form.getName());
+
+        departmentRepository.save(department);
+    }
+
+    @Override
+    public void update(Integer id, DepartmentUpdateForm form) {
+
+        Department department = departmentRepository.findById(id).orElse(null);
+        if (Objects.isNull(department)) {
+            throw new RuntimeException("Department ID not found!");
+        }
+
+        department.setDepartmentName(form.getName());
+
+        departmentRepository.save(department);
     }
 }

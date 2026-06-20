@@ -1,14 +1,21 @@
 package com.vti.service.impl;
 
 import com.vti.DTO.PositionDTO;
+import com.vti.entity.Account;
 import com.vti.entity.Position;
 import com.vti.enumerate.PositionName;
 import com.vti.form.PositionCreateForm;
+import com.vti.form.PositionSearchForm;
 import com.vti.form.PositionUpdateForm;
 import com.vti.repository.IPositionRepository;
 import com.vti.service.IPositionService;
+import com.vti.specification.PositionCustomSpecification;
+import io.micrometer.common.util.StringUtils;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -25,16 +32,17 @@ public class PositionServiceImpl implements IPositionService {
 
     //DTO
     @Override
-    public List<PositionDTO> findAll() {
-        List<Position> positions = positionRepository.findAll();
-        List<PositionDTO> dtos = new ArrayList<>();
+    public Page<PositionDTO> findAll(Pageable pageable, PositionSearchForm form) {
+        Specification<Position> where = Specification.unrestricted();
 
-
-        for (Position pos : positions) {
-            PositionDTO dto = modelMapper.map(pos, PositionDTO.class);
-            dtos.add(dto);
+        if (StringUtils.isNotEmpty(form.getName())) {
+            // Chú ý: "positionName" phải khớp với tên thuộc tính trong class Position (Entity)
+            PositionCustomSpecification nameSpec = new PositionCustomSpecification("positionName", form.getName());
+            where = where.and(nameSpec);
         }
-        return dtos;
+
+        Page<Position> pagePos = positionRepository.findAll(where,pageable);
+        return pagePos.map(pos -> modelMapper.map(pos, PositionDTO.class));
     }
     // DTO
     @Override

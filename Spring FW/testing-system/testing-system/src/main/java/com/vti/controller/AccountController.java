@@ -3,9 +3,13 @@ package com.vti.controller;
 import com.vti.DTO.AccountDTO;
 import com.vti.entity.Account;
 import com.vti.form.AccountCreateForm;
+import com.vti.form.AccountSearchForm;
 import com.vti.form.AccountUpdateForm;
 import com.vti.service.IAccountService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -23,9 +27,9 @@ public class AccountController {
     // Lấy tất cả hoặc tìm kiếm theo fullname
     // 1. Lấy toàn bộ danh sách và ép sang List DTO bằng Constructor mới
     @GetMapping
-    public ResponseEntity<List<AccountDTO>> findAll() {
+    public ResponseEntity<Page<AccountDTO>> findAll(Pageable pageable, AccountSearchForm form) {
         // 1. Lấy thẳng danh sách DTO từ service về
-        List<AccountDTO> dtos = accountService.findAll();
+        Page<AccountDTO> dtos = accountService.findAll(pageable, form);
 
         // 2. Trả thẳng về luôn, không cần .stream().map(...) gì nữa hết!
         return new ResponseEntity<>(dtos, HttpStatus.OK);
@@ -75,7 +79,7 @@ public class AccountController {
 
 
     @PostMapping // dùng cho tính năng THÊM MỚI
-    public ResponseEntity<?> create(@RequestBody AccountCreateForm form) {
+    public ResponseEntity<?> create(@Valid  @RequestBody AccountCreateForm form) {
         try {
 
             accountService.create(form);

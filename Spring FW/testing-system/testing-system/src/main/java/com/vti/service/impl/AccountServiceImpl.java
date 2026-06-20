@@ -6,15 +6,23 @@ import com.vti.entity.Department;
 import com.vti.entity.Group;
 import com.vti.entity.Position;
 import com.vti.form.AccountCreateForm;
+import com.vti.form.AccountSearchForm;
 import com.vti.form.AccountUpdateForm;
 import com.vti.repository.IAccountRepository;
 import com.vti.repository.IDepartmentRepository;
 import com.vti.repository.IGroupRepository;
 import com.vti.repository.IPositionRepository;
 import com.vti.service.IAccountService;
+import com.vti.specification.AccountCustomSpecification;
+import io.micrometer.common.util.StringUtils;
 import jakarta.transaction.Transactional;
+import org.modelmapper.Converter;
 import org.modelmapper.ModelMapper;
+import org.modelmapper.spi.MappingContext;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -38,9 +46,34 @@ public class AccountServiceImpl implements IAccountService {
 
     @Autowired
     private IGroupRepository groupRepository;
+
     @Override
-    public List<AccountDTO> findAll() {
-        List<Account> accounts = accountRepository.findAll();
+    public Page<AccountDTO> findAll(Pageable pageable, AccountSearchForm form) {
+        // 1. Khởi tạo Specification bắt đầu từ null hoặc điều kiện mặc định
+        Specification<Account> where = Specification.unrestricted();// where 1 = 1
+
+        // 2. Sử dụng Specification.where() để khởi tạo
+        if (StringUtils.isNotEmpty(form.getUserName())) {
+            AccountCustomSpecification usernameSpec = new AccountCustomSpecification("username", form.getUserName());
+            where = where.and(usernameSpec);
+        }
+        if (StringUtils.isNotEmpty(form.getEmail())) {
+            AccountCustomSpecification emailSpec = new AccountCustomSpecification("email", form.getEmail());
+            where =  where.and(emailSpec);
+        }
+        if (StringUtils.isNotEmpty(form.getFullName())) {
+            AccountCustomSpecification fullNameSpec = new AccountCustomSpecification("fullName", form.getFullName());
+            where = where.and(fullNameSpec);
+        }
+        if (StringUtils.isNotEmpty(form.getDepartmentName())) {
+            AccountCustomSpecification departmentNameSpec = new AccountCustomSpecification("departmentName", form.getDepartmentName());
+            where =  where.and(departmentNameSpec);
+        }
+        if (StringUtils.isNotEmpty(form.getPositionName())) {
+            AccountCustomSpecification posittionNameSpec = new AccountCustomSpecification("positionName", form.getPositionName());
+            where = where.and(posittionNameSpec);
+        }
+        Page <Account> pageAcc = accountRepository.findAll(where, pageable);
 //
 //        for (Account acc : accounts) {
 //            AccountDTO dto = modelMapper.map(acc, AccountDTO.class);
@@ -49,15 +82,16 @@ public class AccountServiceImpl implements IAccountService {
 //
 //        return dtoList;
 
-        return accounts.stream()
-                .map(acc -> modelMapper.map(acc, AccountDTO.class))
-                .collect(Collectors.toList());
+//        return accounts.stream()
+//                .map(acc -> modelMapper.map(acc, AccountDTO.class))
+//                .collect(Collectors.toList());
+        Page<AccountDTO> pageDTO = pageAcc.map(account -> modelMapper.map(account, AccountDTO.class));
+        return pageDTO;
     }
-
     @Override
     public List<Account> findByFullname(String search) {
 
-        return accountRepository.findByFullnameContaining(search);
+        return accountRepository.findByFullNameContaining(search);
     }
 
 
@@ -136,7 +170,7 @@ public class AccountServiceImpl implements IAccountService {
         // Tạo mới một đối tượng Entity để chuẩn bị lưu vào DB
         Account account = new Account();
         account.setUsername(form.getUsername());
-        account.setFullname(form.getFullName());
+        account.setFullName(form.getFullName());
         account.setEmail(form.getEmail());
 
 
@@ -167,9 +201,12 @@ public class AccountServiceImpl implements IAccountService {
         if (Objects.isNull(account)) {
             throw new RuntimeException("Account ID not found!");
         }
+        if (accountRepository.existsByEmailAndIdNot(form.getEmail(), id)) {
+            throw new RuntimeException("Email exist !");
+        }
 
         // 2. Lấy thông tin từ Form đè vào Entity gốc
-        account.setFullname(form.getFullName());
+        account.setFullName(form.getFullName());
         account.setEmail(form.getEmail());
 
         // 3. Chuyển đổi departmentId ở form -> department dưới DB

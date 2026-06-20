@@ -3,10 +3,14 @@ package com.vti.controller;
 import com.vti.DTO.PositionDTO;
 import com.vti.entity.Position;
 import com.vti.form.PositionCreateForm;
+import com.vti.form.PositionSearchForm;
 import com.vti.form.PositionUpdateForm;
 import com.vti.service.IPositionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -24,9 +28,10 @@ public class PositionController {
     // GET http://localhost:8080/api/positions
     // GET http://localhost:8080/api/positions?name=Dev
     @GetMapping
-    public ResponseEntity<?> findAll() {
-        List<PositionDTO> dtos = positionService.findAll();
-        return new ResponseEntity<>(dtos, HttpStatus.OK);
+    public ResponseEntity<Page<PositionDTO>> findAll(
+            @PageableDefault(page = 0, size = 10) Pageable pageable,
+            PositionSearchForm form) {
+        return new ResponseEntity<>(positionService.findAll(pageable, form), HttpStatus.OK);
     }
 
     // 2. Tìm theo ID: GET http://localhost:8080/api/positions/{id}

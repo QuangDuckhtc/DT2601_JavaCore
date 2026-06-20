@@ -3,9 +3,13 @@ package com.vti.controller;
 import com.vti.DTO.DepartmentDTO;
 import com.vti.entity.Department;
 import com.vti.form.DepartmentCreateForm;
+import com.vti.form.DepartmentSearchForm;
 import com.vti.form.DepartmentUpdateForm;
 import com.vti.service.IDepartmentService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -24,10 +28,14 @@ public class DepartmentController {
     // Lấy tất cả: GET http://localhost:8080/api/departments
     // Tìm theo tên: GET http://localhost:8080/api/departments?name=Phòng Giám Đốc
     @GetMapping
-    public ResponseEntity<?> findAll() {
-        List<DepartmentDTO> dtos = departmentService.findAll();
-        return new ResponseEntity<>(dtos, HttpStatus.OK);
+    public ResponseEntity<Page<DepartmentDTO>> findAll(
+            @PageableDefault(page = 0, size = 10) Pageable pageable,
+            DepartmentSearchForm form) {
 
+        // Gọi service để lấy dữ liệu đã phân trang và lọc
+        Page<DepartmentDTO> departments = departmentService.findAll(pageable, form);
+
+        return new ResponseEntity<>(departments, HttpStatus.OK);
     }
     // 2. Tìm theo ID: GET http://localhost:8080/api/departments/{id}
     @GetMapping("/{id}")

@@ -20,7 +20,7 @@ public class AccountDTO {
     public AccountDTO(Account account) {
         if (account != null) {
             this.userName = account.getUsername();
-            this.fullName = account.getFullname();
+            this.fullName = account.getFullName();
             this.email = account.getEmail();
 
             // Sửa dòng này: Kiểm tra null trước khi ép kiểu Date sang String

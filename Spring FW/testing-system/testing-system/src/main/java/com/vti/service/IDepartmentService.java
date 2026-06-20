@@ -3,13 +3,16 @@ package com.vti.service;
 import com.vti.DTO.DepartmentDTO;
 import com.vti.entity.Department;
 import com.vti.form.DepartmentCreateForm;
+import com.vti.form.DepartmentSearchForm;
 import com.vti.form.DepartmentUpdateForm;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 
 public interface IDepartmentService {
     // findALL theo DTO
-    List<DepartmentDTO> findAll();                 // Lấy tất cả
+    Page<DepartmentDTO> findAll(Pageable pageable, DepartmentSearchForm form);            // Lấy tất cả
 
     List<Department> findByName(String name);    // Tìm theo tên
 

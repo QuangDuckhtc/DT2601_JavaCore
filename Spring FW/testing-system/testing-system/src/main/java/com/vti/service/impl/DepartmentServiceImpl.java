@@ -1,13 +1,20 @@
 package com.vti.service.impl;
 
 import com.vti.DTO.DepartmentDTO;
+import com.vti.entity.Account;
 import com.vti.entity.Department;
 import com.vti.form.DepartmentCreateForm;
+import com.vti.form.DepartmentSearchForm;
 import com.vti.form.DepartmentUpdateForm;
 import com.vti.repository.IDepartmentRepository;
 import com.vti.service.IDepartmentService;
+import com.vti.specification.DepartmentCustomSpecification;
+import io.micrometer.common.util.StringUtils;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -26,26 +33,24 @@ public class DepartmentServiceImpl implements IDepartmentService {
 
     // dùng DTO
     @Override
-    public List<DepartmentDTO> findAll() {
-
-        List<Department> departments = departmentRepository.findAll();
-
-        List<DepartmentDTO> dtos = new ArrayList<>();
+    public Page<DepartmentDTO> findAll(Pageable pageable, DepartmentSearchForm form) {
+        Specification<Department> where = Specification.unrestricted();// where 1 = 1
 
 
-        for (Department dept : departments) {
-            DepartmentDTO dto = modelMapper.map(dept, DepartmentDTO.class);
-            dtos.add(dto);
+        if (StringUtils.isNotEmpty(form.getName())) {
+            DepartmentCustomSpecification nameSpec = new DepartmentCustomSpecification("departmentName", form.getName());
+            where = where.and(nameSpec);
         }
-
-        return dtos;
+        Page<Department> pageDep = departmentRepository.findAll(where, pageable);
+        return pageDep.map(dep -> modelMapper.map(dep, DepartmentDTO.class));
     }
 
     @Override
     public List<Department> findByName(String name) {
         return departmentRepository.findByDepartmentName(name);
     }
-// dùng DTO
+
+    // dùng DTO
     @Override
     public DepartmentDTO findById(Integer id) {
         // 1. Tìm Entity dưới DB

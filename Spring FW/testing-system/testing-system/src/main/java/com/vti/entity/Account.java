@@ -31,7 +31,7 @@ public class Account {
     private String password;
 
     @Column(name = "full_name", length = 100, nullable = false, unique = true)
-    private String fullname;
+    private String fullName;
 
     @ManyToOne
     @JoinColumn(name = "department_id")

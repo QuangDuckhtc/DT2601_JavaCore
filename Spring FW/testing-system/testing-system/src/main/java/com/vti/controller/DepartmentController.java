@@ -24,15 +24,10 @@ public class DepartmentController {
     @Autowired
     private IDepartmentService departmentService;
 
-    // 1. Lấy tất cả hoặc Tìm kiếm theo tên
-    // Lấy tất cả: GET http://localhost:8080/api/departments
-    // Tìm theo tên: GET http://localhost:8080/api/departments?name=Phòng Giám Đốc
+    // phan trang , lọc
     @GetMapping
-    public ResponseEntity<Page<DepartmentDTO>> findAll(
-            @PageableDefault(page = 0, size = 10) Pageable pageable,
-            DepartmentSearchForm form) {
+    public ResponseEntity<Page<DepartmentDTO>> findAll(@PageableDefault(page = 0, size = 10) Pageable pageable, DepartmentSearchForm form) {
 
-        // Gọi service để lấy dữ liệu đã phân trang và lọc
         Page<DepartmentDTO> departments = departmentService.findAll(pageable, form);
 
         return new ResponseEntity<>(departments, HttpStatus.OK);

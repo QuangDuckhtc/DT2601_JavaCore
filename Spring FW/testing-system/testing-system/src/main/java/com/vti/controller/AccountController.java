@@ -24,14 +24,13 @@ public class AccountController {
     @Autowired
     private IAccountService accountService;
 
-    // Lấy tất cả hoặc tìm kiếm theo fullname
-    // 1. Lấy toàn bộ danh sách và ép sang List DTO bằng Constructor mới
+
+// phan trang , lọc
     @GetMapping
     public ResponseEntity<Page<AccountDTO>> findAll(Pageable pageable, AccountSearchForm form) {
-        // 1. Lấy thẳng danh sách DTO từ service về
+
         Page<AccountDTO> dtos = accountService.findAll(pageable, form);
 
-        // 2. Trả thẳng về luôn, không cần .stream().map(...) gì nữa hết!
         return new ResponseEntity<>(dtos, HttpStatus.OK);
     }
 

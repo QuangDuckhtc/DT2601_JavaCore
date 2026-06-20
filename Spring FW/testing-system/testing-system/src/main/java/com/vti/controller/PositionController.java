@@ -24,13 +24,10 @@ public class PositionController {
     @Autowired
     private IPositionService positionService;
 
-    // 1. Lấy tất cả hoặc tìm kiếm theo tên:
-    // GET http://localhost:8080/api/positions
-    // GET http://localhost:8080/api/positions?name=Dev
+
+    // phan trang , lọc
     @GetMapping
-    public ResponseEntity<Page<PositionDTO>> findAll(
-            @PageableDefault(page = 0, size = 10) Pageable pageable,
-            PositionSearchForm form) {
+    public ResponseEntity<Page<PositionDTO>> findAll(@PageableDefault(page = 0, size = 10) Pageable pageable, PositionSearchForm form) {
         return new ResponseEntity<>(positionService.findAll(pageable, form), HttpStatus.OK);
     }
 

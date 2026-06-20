@@ -12,7 +12,7 @@ public class AccountDTO {
     private String positionName;
     private String createDate;
 
-    // --- Constructor không tham số Bắt buộc phải có trong DTO ---
+
     public AccountDTO() {
     }
 
@@ -23,7 +23,7 @@ public class AccountDTO {
             this.fullName = account.getFullName();
             this.email = account.getEmail();
 
-            // Sửa dòng này: Kiểm tra null trước khi ép kiểu Date sang String
+            //  Kiểm tra null trước khi ép kiểu Date sang String
             this.createDate = account.getCreateDate() != null ? String.valueOf(account.getCreateDate()) : null;
 
             // Kiểm tra null của bảng Department
